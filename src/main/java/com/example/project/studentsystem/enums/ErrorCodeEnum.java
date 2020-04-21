@@ -19,7 +19,8 @@ public enum ErrorCodeEnum {
     COMPONENT_NOT_EXIST(12,"组件不存在"),
     GLOBAL_DATA_NOT_EXIST(13,"全局数据不存在"),
     ASF_NETWORK_BASE_COULDNT_CONNECT_SERVER(14,"无法连接服务器"),
-    ASF_NETWORK_BASE_UNKNOWN_ERROR(15,"未知错误");
+    ASF_NETWORK_BASE_UNKNOWN_ERROR(15,"未知错误"),
+    USERNAME_POSSWORD_ERROE(16,"用户名密码错误");
 
 
     private Integer code;
