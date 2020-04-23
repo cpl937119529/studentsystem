@@ -1,5 +1,8 @@
 package com.example.project.studentsystem.entry;
 
+import lombok.Data;
+
+@Data
 public class Course {
 
     /**
