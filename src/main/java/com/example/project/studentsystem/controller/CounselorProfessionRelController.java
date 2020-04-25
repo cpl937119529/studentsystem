@@ -7,10 +7,7 @@ import com.example.project.studentsystem.dto.CounselorProfessionRelResp;
 import com.example.project.studentsystem.entry.CounselorProfessionRel;
 import com.example.project.studentsystem.service.CounselorProfessionRelService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,8 +33,18 @@ public class CounselorProfessionRelController {
         boolean save = service.save(resp);
         if(save){
             return Results.newSuccessResult("分配成功");
-        }
+    }
 
         return Results.newFailedResult("分配失败");
     }
+
+    /**
+     * 获取所有信息
+     * @return
+     */
+    @GetMapping("/getAll")
+    public Result<Object> getAll(){
+        return Results.newSuccessResult(service.getAll());
+    }
+
 }

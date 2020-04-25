@@ -15,4 +15,8 @@ public class CounselorProfessionRelResp {
 
     private Integer endYear;
 
+    private String professionName;
+
+    private String counselorName;
+
 }

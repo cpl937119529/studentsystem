@@ -16,12 +16,21 @@ public class StudentController {
     private StudentService studentService;
 
     /**
-     * 获取所有学生信息
+     * 获取所有未分配学生信息
      * @return
      */
     @GetMapping("/getAll")
     public Result<Object> getAll(){
         return Results.newSuccessResult(studentService.getAll());
+    }
+
+    /**
+     * 获取所有学生信息
+     * @return
+     */
+    @GetMapping("/getAllInfo")
+    public Result<Object> getAllInfo(){
+        return Results.newSuccessResult(studentService.getAllInfo());
     }
 
 

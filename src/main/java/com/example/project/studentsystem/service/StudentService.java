@@ -67,15 +67,6 @@ public class StudentService {
                     }
                 }
 
-                if(student.getProfessionId()!=null){
-                    resp.setProfessionId(student.getProfessionId().toString());
-                    //获取专业信息
-                    Profession profession = professionMapper.selectById(student.getProfessionId());
-                    if(profession!=null){
-                        resp.setProfessionName(profession.getProfessionName());
-                    }
-                }
-
                 resultList.add(resp);
             });
         }
@@ -137,8 +128,51 @@ public class StudentService {
         student.setUserId(userId);
         student.setName(resp.getName());
         student.setSex(resp.getSex());
+        student.setStartYear(resp.getStartYear());
         studentMapper.insert(student);
         return 1;
+
+    }
+
+
+    /**
+     * 获取未全部学生信息
+     * @return
+     */
+    public List<StudentResp> getAllInfo(){
+        List<StudentResp> resultList = Lists.newArrayList();
+        List<Student> students = studentMapper.selectList(null);
+        if(CollectionUtil.isNotEmpty(students)){
+            students.forEach(student -> {
+                StudentResp resp = new StudentResp();
+                BeanUtils.copyProperties(student,resp);
+
+                resp.setId(student.getId().toString());
+
+                resp.setUserId(student.getUserId().toString());
+
+                //获取班级信息
+                if(student.getClassId()!=null){
+                    resp.setClassId(student.getClassId().toString());
+                    Class aClass = classMapper.selectById(student.getClassId());
+                    if(aClass!=null){
+                        resp.setClassName(aClass.getClassName());
+                    }
+                }
+
+                if(student.getProfessionId()!=null){
+                    resp.setProfessionId(student.getProfessionId().toString());
+                    //获取专业信息
+                    Profession profession = professionMapper.selectById(student.getProfessionId());
+                    if(profession!=null){
+                        resp.setProfessionName(profession.getProfessionName());
+                    }
+                }
+
+                resultList.add(resp);
+            });
+        }
+        return resultList;
 
     }
 
