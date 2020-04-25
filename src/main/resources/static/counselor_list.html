@@ -37,7 +37,7 @@
               let str = "";
               for(let i=0;i<response.data.length;i++){
                 str = "<tr>"
-                        +"<td>" + response.data[i].userId + "</td>"
+                        // +"<td>" + response.data[i].userId + "</td>"
                         +"<td>" + response.data[i].id + "</td>"
                         +"<td>" + (response.data[i].counselorName!==null?response.data[i].counselorName:"未填写")+ "</td>"
                         +"<td>" + (response.data[i].department!==null?response.data[i].department:"未填写")+ "</td>"
@@ -100,7 +100,7 @@
       <table class="layui-table">
         <thead>
           <tr>
-            <th>用户ID</th>
+<!--            <th>用户ID</th>-->
             <th>辅导员编码</th>
             <th>姓名</th>
             <th>所属学院</th>
