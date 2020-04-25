@@ -41,9 +41,8 @@
                         +"<td>" + (response.data[i].name!=null?response.data[i].name:"")+ "</td>"
                         +"<td>" + (response.data[i].professionName?response.data[i].professionName:"")+ "</td>"
                         +"<td>" + (response.data[i].className?response.data[i].className:"")+ "</td>"
-                        +"<td>" + (response.data[i].studentNumber?response.data[i].studentNumber:"")+ "</td>"
                         +"<td>"+
-                            "<button  onclick='assignProfession("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>辅导员</span></button>" +
+                            "<button  onclick='sureAdd("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>添加</span></button>" +
                         " </td>"
                         +"</tr>";
                 $("#recordTab").append(str);
@@ -57,7 +56,43 @@
     }
     
     
-    function assignProfession(data) {
+    function sureAdd(data) {
+
+      if(document.cookie.length!==0){
+        // 按照分隔符截取后转换获得对象
+        const msg = document.cookie.split("; ");
+        for(let i=0; i<msg.length; i++){
+          const info = msg[i].split("=")[0];
+          if(info==="professionData"){
+            const obj = JSON.parse(msg[i].split("=")[1]);
+            const userInfo={}
+            userInfo.professionId=obj.id;
+            userInfo.id=data.id;
+
+            $.ajax({
+              url: "/student/updateInfo",
+              data: JSON.stringify(userInfo),
+              type: "POST",
+              contentType: "application/json;charset=utf-8",
+              success: function (response) {
+                console.log("sdfgsdfh:",response)
+                if (response.code===200){
+                  alert("添加成功")
+                 location.reload();
+                }else {
+                  alert(response.message)
+                }
+              }
+            });
+
+
+
+          }
+        }
+      }
+
+
+
       const userData={};
       userData.id=user.id
       userData.userType=type;
@@ -93,18 +128,13 @@
 <!--          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>-->
 <!--        </form>-->
 <!--      </div>-->
-      <xblock>
-        <button class="layui-btn" onclick="x_admin_show('添加用户','./member-add.html',600,400)"><i class="layui-icon"></i>添加</button>
-<!--        <span class="x-right" style="line-height:40px">共有数据：88 条</span>-->
-      </xblock>
       <table class="layui-table">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>学号</th>
             <th>姓名</th>
             <th>专业</th>
             <th>班级</th>
-            <th>学号</th>
             <th>操作</th>
           </tr>
         </thead>

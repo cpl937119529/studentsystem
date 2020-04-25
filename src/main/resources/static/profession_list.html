@@ -59,15 +59,13 @@
 
 
     function assignCounselor(professionData) {
-
       document.cookie = "professionData=" + JSON.stringify(professionData);
       x_admin_show("分配辅导员","./counselor_list.html",1000);
-
-
     }
 
     function assignStudent(professionData) {
-
+      document.cookie = "professionData=" + JSON.stringify(professionData);
+      x_admin_show("学生列表","./student_list.html",1000);
     }
 
 

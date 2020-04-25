@@ -28,9 +28,6 @@ public class Student {
 
     private String professionDirection;
 
-    //学号
-    private String studentNumber;
-
     private String politicalStatus;
 
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd")

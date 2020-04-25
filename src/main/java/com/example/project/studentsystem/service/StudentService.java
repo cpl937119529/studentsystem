@@ -34,14 +34,15 @@ public class StudentService {
 
 
     /**
-     * 获取全部学生信息
+     * 获取未分配专业的全部学生信息
      * @return
      */
     public List<StudentResp> getAll(){
 
         List<StudentResp> resultList = Lists.newArrayList();
-
-        List<Student> students = studentMapper.selectList(null);
+        QueryWrapper<Student> wrapper = new QueryWrapper<>();
+        wrapper.isNull("profession_id");
+        List<Student> students = studentMapper.selectList(wrapper);
         if(CollectionUtil.isNotEmpty(students)){
             students.forEach(student -> {
                 StudentResp resp = new StudentResp();
@@ -76,6 +77,31 @@ public class StudentService {
 
         return resultList;
 
+    }
+
+
+    /**
+     * updateInfo
+     * @param resp
+     * @return
+     */
+    public boolean updateInfo(StudentResp resp){
+        Student student = new Student();
+        BeanUtils.copyProperties(resp,student);
+        if(resp.getId()!=null){
+            student.setId(Long.valueOf(resp.getId()));
+        }
+
+        if(resp.getClassId()!=null){
+            student.setClassId(Long.valueOf(resp.getClassId()));
+        }
+
+        if(resp.getProfessionId()!=null){
+            student.setProfessionId(Long.valueOf(resp.getProfessionId()));
+        }
+
+
+       return studentService.saveOrUpdate(student);
     }
 
 }

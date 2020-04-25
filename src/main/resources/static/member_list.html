@@ -42,8 +42,8 @@
                         +"<td>" + response.data[i].passWord+ "</td>"
                         +"<td class='td-status'> <span class='layui-btn layui-btn-normal layui-btn-mini'>未分配</span></td> "
                         +"<td>"+
-                            "<button  onclick='assignAccount("+ JSON.stringify(response.data[i])+",2)'><span class='layui-btn layui-btn-normal layui-btn-mini'>辅导员</span></button>" +
-                            "<button  onclick='assignAccount("+ JSON.stringify(response.data[i])+",3)'><span class='layui-btn layui-btn-normal layui-btn-mini'>学生</span></button>" +
+                            "<button  onclick='assignAccount("+ JSON.stringify(response.data[i])+",2)'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配给辅导员</span></button>" +
+                            "<button  onclick='assignAccount("+ JSON.stringify(response.data[i])+",3)'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配给学生</span></button>" +
                         " </td>"
                         +"</tr>";
                 $("#recordTab").append(str);

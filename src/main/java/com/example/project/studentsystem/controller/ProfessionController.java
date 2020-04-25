@@ -22,7 +22,14 @@ public class ProfessionController {
      */
     @PostMapping("/addProfession")
     public Result<Object> addProfession(@RequestBody Profession profession){
-        return Results.newSuccessResult(professionService.addProfession(profession));
+        int result = professionService.addProfession(profession);
+        if(result==1){
+            return Results.newSuccessResult("成功");
+        }else if(result==-1){
+            return Results.newFailedResult("已经存在，不必重复添加");
+        }else {
+            return Results.newFailedResult("添加失败");
+        }
     }
 
     /**

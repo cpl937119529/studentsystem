@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.project.studentsystem.IService.IProfessionService;
 import com.example.project.studentsystem.dto.CounselorProfessionRelResp;
 import com.example.project.studentsystem.dto.ProfessionResp;
+import com.example.project.studentsystem.entry.Class;
 import com.example.project.studentsystem.entry.CounselorProfessionRel;
 import com.example.project.studentsystem.entry.Profession;
+import com.example.project.studentsystem.mapper.ClassMapper;
 import com.example.project.studentsystem.mapper.ProfessionMapper;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
@@ -24,14 +26,44 @@ public class ProfessionService {
     @Autowired
     private ProfessionMapper professionMapper;
 
+    @Autowired
+    private ClassMapper classMapper;
+
 
     /**
      * 添加专业
      * @param profession
      * @return
      */
-    public boolean addProfession(Profession profession){
-         return professionService.saveOrUpdate(profession);
+    public int addProfession(Profession profession){
+
+        //判断有无该专业，五则添加
+        QueryWrapper<Profession> wrapper = new QueryWrapper<>();
+        wrapper.eq("profession_name",profession.getProfessionName());
+        List<Profession> professions = professionMapper.selectList(wrapper);
+
+        if(CollectionUtil.isNotEmpty(professions)){
+            return -1;
+        }
+
+        boolean result = professionService.saveOrUpdate(profession);
+
+        if (result){
+
+            //同时为改专业添加班级信息
+            List<Profession> professionList = professionMapper.selectList(wrapper);
+            Class classInfo = new Class();
+            classInfo.setClassName(profession.getProfessionName()+"1班");
+            classInfo.setProfessionId(professionList.get(0).getId());
+            classMapper.insert(classInfo);
+
+            Class classInfo1 = new Class();
+            classInfo1.setClassName(profession.getProfessionName()+"2班");
+            classInfo1.setProfessionId(professionList.get(0).getId());
+            classMapper.insert(classInfo1);
+            return 1;
+        }
+        return -2;
     }
 
     /**
