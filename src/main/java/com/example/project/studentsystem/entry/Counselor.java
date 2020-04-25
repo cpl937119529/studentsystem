@@ -17,8 +17,6 @@ public class Counselor {
 
     private Integer sex;
 
-    private String managerProfession;
-
     private String department;
 
 }
