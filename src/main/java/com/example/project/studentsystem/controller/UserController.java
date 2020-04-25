@@ -39,24 +39,12 @@ public class UserController {
     }
 
     /**
-     * 获取所有未分配的账户
+     * 获取所有账户
      * @return
      */
     @GetMapping("/getAll")
     public Result<Object> getAll(){
-        List<User> users = userService.getAll();
-        List<UserResp> rasps = new ArrayList<>();
-        if(CollectionUtil.isNotEmpty(users)){
-            users.forEach(user -> {
-                UserResp userResp = new UserResp();
-                userResp.setId(user.getId().toString());
-                userResp.setUserName(user.getUserName());
-                userResp.setPassWord(user.getUserName());
-                userResp.setUserType(user.getUserType());
-                rasps.add(userResp);
-            });
-        }
-        return Results.newSuccessResult(rasps);
+        return Results.newSuccessResult(userService.getAll());
     }
 
     /**

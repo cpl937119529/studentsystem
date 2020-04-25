@@ -7,9 +7,11 @@ import com.example.project.studentsystem.dto.StudentResp;
 import com.example.project.studentsystem.entry.Class;
 import com.example.project.studentsystem.entry.Profession;
 import com.example.project.studentsystem.entry.Student;
+import com.example.project.studentsystem.entry.User;
 import com.example.project.studentsystem.mapper.ClassMapper;
 import com.example.project.studentsystem.mapper.ProfessionMapper;
 import com.example.project.studentsystem.mapper.StudentMapper;
+import com.example.project.studentsystem.mapper.UserMapper;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class StudentService {
 
     @Autowired
     private ProfessionMapper professionMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
 
     /**
@@ -103,5 +108,39 @@ public class StudentService {
 
        return studentService.saveOrUpdate(student);
     }
+
+
+    /**
+     * 添加学生用户
+     * @param resp
+     * @return
+     */
+    public int addStudent(StudentResp resp){
+
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_name",resp.getUserName());
+        wrapper.eq("pass_word",resp.getPassWord());
+        List<User> users = userMapper.selectList(wrapper);
+        if(CollectionUtil.isNotEmpty(users)){
+            return -1;
+        }
+
+        User user = new User();
+        user.setUserType(3);
+        user.setUserName(resp.getUserName());
+        user.setPassWord(resp.getPassWord());
+        userMapper.insert(user);
+
+        List<User> userList = userMapper.selectList(wrapper);
+        Long userId = userList.get(0).getId();
+        Student student = new Student();
+        student.setUserId(userId);
+        student.setName(resp.getName());
+        student.setSex(resp.getSex());
+        studentMapper.insert(student);
+        return 1;
+
+    }
+
 
 }

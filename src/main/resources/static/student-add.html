@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script>
+
+        function addUser() {
+            const data={}
+            let userName = document.getElementById("username").value;
+            let passWord = document.getElementById("password").value;
+            let rePassword = document.getElementById("repass").value;
+            let name = document.getElementById("name").value;
+            let sex = document.getElementById("sex").value;
+            if(userName==="" || passWord==="" || rePassword==="" || name==="" || sex===""){
+                alert("输入信息不完整")
+            }else if(passWord !== rePassword) {
+                alert("两次密码输入不一致")
+            }else {
+                data.userName=userName;
+                data.passWord=passWord;
+                data.name=name;
+                data.sex=sex==="男"?1:2;
+                $.ajax({
+                    url: "/student/addStudent",
+                    data: JSON.stringify(data),
+                    type: "POST",
+                    contentType: "application/json;charset=utf-8",
+                    success: function (response) {
+                        console.log("添加结果返回：",response)
+                        if (response.code===200){
+                            alert("添加成功");
+                            window.top.document.location.reload();
+                        }else {
+                            alert(response.message)
+                        }
+                    }
+                });
+
+            }
+
+        }
+
+    </script>
+  </head>
+  
+  <body>
+    <div class="x-body">
+
+        <div class="layui-form-item">
+            <label for="username" class="layui-form-label">
+                <span class="x-red">*</span>用户名
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="username" name="username" required="" lay-verify="username"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="password" class="layui-form-label">
+                <span class="x-red">*</span>密码
+            </label>
+            <div class="layui-input-inline">
+                <input type="password" id="password" name="password" required="" lay-verify="password"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="repass" class="layui-form-label">
+                <span class="x-red">*</span>确认密码
+            </label>
+            <div class="layui-input-inline">
+                <input type="password" id="repass" name="repass" required="" lay-verify="repass"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label for="name" class="layui-form-label">
+                <span class="x-red">*</span>姓名
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="name" name="name" required="" lay-verify="name"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="name" class="layui-form-label">
+                <span class="x-red">*</span>性别
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="sex" name="sex" required="" lay-verify="sex"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <button  class="layui-btn" style="margin-left: 110px" onclick="addUser()">
+                增加
+            </button>
+        </div>
+    </div>
+
+  </body>
+
+</html>

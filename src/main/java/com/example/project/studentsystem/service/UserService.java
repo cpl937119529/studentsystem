@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.project.studentsystem.IService.IUserService;
 import com.example.project.studentsystem.IService.impl.IUserServiceImpl;
 import com.example.project.studentsystem.dto.LoginReq;
+import com.example.project.studentsystem.dto.UserResp;
 import com.example.project.studentsystem.entry.Counselor;
 import com.example.project.studentsystem.entry.Student;
 import com.example.project.studentsystem.entry.User;
@@ -15,6 +16,7 @@ import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,10 +48,37 @@ public class UserService {
     }
 
 
-    public List<User> getAll(){
+    //去除admin后的所有账户信息
+    public List<UserResp> getAll(){
         List<User> users = userMapper.selectList(null);
-        List<User> result = users.stream().filter(user -> user.getUserType() == null).collect(Collectors.toList());
-        return result;
+        List<UserResp> resultList = new ArrayList<>();
+        if(CollectionUtil.isNotEmpty(users)){
+
+            List<User> collect = users.stream().filter(data -> data.getId() != 1L).collect(Collectors.toList());
+
+            collect.forEach(user -> {
+                UserResp userResp = new UserResp();
+                userResp.setId(user.getId().toString());
+                userResp.setUserName(user.getUserName());
+                userResp.setPassWord(user.getPassWord());
+                userResp.setUserType(user.getUserType());
+                userResp.setIdentity(user.getUserType()==3?"学生":"辅导员");
+                //获取名字信息
+                if(user.getUserType()==3){
+                    QueryWrapper<Student> studentQueryWrapper = new QueryWrapper<>();
+                    studentQueryWrapper.eq("user_id",user.getId());
+                    List<Student> students = studentMapper.selectList(studentQueryWrapper);
+                    userResp.setName(students.get(0).getName());
+                } else if(user.getUserType()==2){
+                    QueryWrapper<Counselor> queryWrapper = new QueryWrapper<>();
+                    queryWrapper.eq("user_id",user.getId());
+                    List<Counselor> counselors = counselorMapper.selectList(queryWrapper);
+                    userResp.setName(counselors.get(0).getCounselorName());
+                }
+                resultList.add(userResp);
+            });
+        }
+        return resultList;
     }
 
     public int addUser(LoginReq req){

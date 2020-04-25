@@ -21,21 +21,27 @@
 
     <script>
 
-        function addUser() {
+        function addCounselor() {
             const data={}
             let userName = document.getElementById("username").value;
             let passWord = document.getElementById("password").value;
             let rePassword = document.getElementById("repass").value;
+            let name = document.getElementById("name").value;
+            let sex = document.getElementById("sex").value;
+            let department = document.getElementById("department").value;
 
-            if(userName==="" || passWord==="" || rePassword===""){
+            if(userName==="" || passWord==="" || rePassword==="" || name==="" || sex==="" || department===""){
                 alert("输入信息不完整")
             }else if(passWord !== rePassword) {
                 alert("两次密码输入不一致")
             }else {
                 data.userName=userName;
                 data.passWord=passWord;
+                data.counselorName=name;
+                data.sex=sex==="男"?1:2;
+                data.department=department;
                 $.ajax({
-                    url: "/user/addUser",
+                    url: "/counselor/addCounselor",
                     data: JSON.stringify(data),
                     type: "POST",
                     contentType: "application/json;charset=utf-8",
@@ -88,7 +94,34 @@
             </div>
         </div>
         <div class="layui-form-item">
-            <button  class="layui-btn" style="margin-left: 110px" onclick="addUser()">
+            <label for="name" class="layui-form-label">
+                <span class="x-red">*</span>姓名
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="name" name="name" required="" lay-verify="name"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="name" class="layui-form-label">
+                <span class="x-red">*</span>性别
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="sex" name="sex" required="" lay-verify="sex"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="department" class="layui-form-label">
+                <span class="x-red">*</span>学院
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="department" name="department" required="" lay-verify="department"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <button  class="layui-btn" style="margin-left: 110px" onclick="addCounselor()">
                 增加
             </button>
         </div>

@@ -2,6 +2,7 @@ package com.example.project.studentsystem.controller;
 
 import com.example.project.studentsystem.base.Result;
 import com.example.project.studentsystem.base.Results;
+import com.example.project.studentsystem.dto.CounselorResp;
 import com.example.project.studentsystem.dto.StudentResp;
 import com.example.project.studentsystem.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,21 @@ public class StudentController {
     @PostMapping("/updateInfo")
     public Result<Object> updateInfo(@RequestBody StudentResp resp){
         return Results.newSuccessResult(studentService.updateInfo(resp));
+    }
+
+
+    /**
+     * 添加学生用户
+     * @param resp
+     * @return
+     */
+    @PostMapping("/addStudent")
+    public Result<Object> addCounselor(@RequestBody StudentResp resp){
+        int i = studentService.addStudent(resp);
+        if(i==-1){
+            return Results.newFailedResult("此用户名已存在");
+        }
+        return Results.newSuccessResult("添加成功");
     }
 
 

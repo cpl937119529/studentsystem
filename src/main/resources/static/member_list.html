@@ -40,11 +40,12 @@
                         +"<td>" + response.data[i].id + "</td>"
                         +"<td>" + response.data[i].userName + "</td>"
                         +"<td>" + response.data[i].passWord+ "</td>"
-                        +"<td class='td-status'> <span class='layui-btn layui-btn-normal layui-btn-mini'>未分配</span></td> "
-                        +"<td>"+
-                            "<button  onclick='assignAccount("+ JSON.stringify(response.data[i])+",2)'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配给辅导员</span></button>" +
-                            "<button  onclick='assignAccount("+ JSON.stringify(response.data[i])+",3)'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配给学生</span></button>" +
-                        " </td>"
+                        +"<td>" + response.data[i].name+ "</td>"
+                        +"<td>" + response.data[i].identity+"</td> "
+                        // +"<td>"+
+                        //     "<button  onclick='assignAccount("+ JSON.stringify(response.data[i])+",2)'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配给辅导员</span></button>" +
+                        //     "<button  onclick='assignAccount("+ JSON.stringify(response.data[i])+",3)'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配给学生</span></button>" +
+                        // " </td>"
                         +"</tr>";
                 $("#recordTab").append(str);
               }
@@ -94,7 +95,7 @@
 <!--        </form>-->
 <!--      </div>-->
       <xblock>
-        <button class="layui-btn" onclick="x_admin_show('添加用户','./member-add.html',600,400)"><i class="layui-icon"></i>添加</button>
+<!--        <button class="layui-btn" onclick="x_admin_show('添加用户','./member-add.html',600,400)"><i class="layui-icon"></i>添加</button>-->
 <!--        <span class="x-right" style="line-height:40px">共有数据：88 条</span>-->
       </xblock>
       <table class="layui-table">
@@ -103,8 +104,9 @@
             <th>用户ID</th>
             <th>用户名</th>
             <th>密码</th>
-            <th>状态</th>
-            <th>操作</th>
+            <th>姓名</th>
+            <th>身份</th>
+
           </tr>
         </thead>
         <tbody id="recordTab">

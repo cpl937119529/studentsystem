@@ -33,12 +33,12 @@
         </div>
         <ul class="layui-nav left fast-add" lay-filter="">
             <li class="layui-nav-item">
-                <a href="javascript:;" onclick="importCourse()">导入课程</a>
-<!--                <dl class="layui-nav-child"> &lt;!&ndash; 二级菜单 &ndash;&gt;-->
-<!--                    <dd><a onclick="x_admin_show('资讯','http://www.baidu.com')"><i class="iconfont">&#xe6a2;</i>资讯</a></dd>-->
-<!--                    <dd><a onclick="x_admin_show('图片','http://www.baidu.com')"><i class="iconfont">&#xe6a8;</i>图片</a></dd>-->
-<!--                    <dd><a onclick="x_admin_show('用户','http://www.baidu.com')"><i class="iconfont">&#xe6b8;</i>用户</a></dd>-->
-<!--                </dl>-->
+                <a href="javascript:;" >增加</a>
+                <dl class="layui-nav-child"> <!-- 二级菜单 -->
+                    <dd><a onclick="x_admin_show('添加辅导员','./counselor-add.html',600,600)"><i class="iconfont">&#xe6a2;</i>辅导员</a></dd>
+                    <dd><a onclick="x_admin_show('添加学生','./student-add.html',600,600)"><i class="iconfont">&#xe6a8;</i>学生</a></dd>
+                    <dd><a onclick="importCourse()"><i class="iconfont">&#xe6b8;</i>课程</a></dd>
+                </dl>
             </li>
         </ul>
         <ul class="layui-nav right" lay-filter="">

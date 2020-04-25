@@ -13,4 +13,9 @@ public class UserResp {
 
     private Integer userType;
 
+    //姓名
+    private String name;
+    //身份
+    private String identity;
+
 }

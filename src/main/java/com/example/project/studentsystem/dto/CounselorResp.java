@@ -15,4 +15,8 @@ public class CounselorResp {
 
     private String department;
 
+    private String userName;
+
+    private String passWord;
+
 }

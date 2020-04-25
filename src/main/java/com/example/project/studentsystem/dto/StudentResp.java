@@ -49,4 +49,8 @@ public class StudentResp {
 
     private String qq;
 
+    private String userName;
+
+    private String passWord;
+
 }
