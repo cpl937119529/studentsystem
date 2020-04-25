@@ -66,7 +66,11 @@ public class UserController {
      */
     @PostMapping("/addUser")
     public Result<Object> addUser(@RequestBody LoginReq req){
-        return Results.newSuccessResult(userService.addUser(req));
+        int i = userService.addUser(req);
+        if(i==-99){
+            return Results.newFailedResult("已存在该用户");
+        }
+        return Results.newSuccessResult(i);
     }
 
 

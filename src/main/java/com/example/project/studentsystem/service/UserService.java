@@ -11,6 +11,7 @@ import com.example.project.studentsystem.entry.User;
 import com.example.project.studentsystem.mapper.CounselorMapper;
 import com.example.project.studentsystem.mapper.StudentMapper;
 import com.example.project.studentsystem.mapper.UserMapper;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +53,15 @@ public class UserService {
     }
 
     public int addUser(LoginReq req){
+
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_name",req.getUserName());
+        wrapper.eq("pass_word",req.getPassWord());
+        List<User> users = userMapper.selectList(wrapper);
+        if(CollectionUtil.isNotEmpty(users)){
+            return -99;
+        }
+
         User user = new User();
         user.setUserName(req.getUserName());
         user.setPassWord(req.getPassWord());
