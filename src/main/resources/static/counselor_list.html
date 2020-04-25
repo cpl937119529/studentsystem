@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>高校学生综合测评系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <script>
+
+    function getAll() {
+      $.ajax({
+        url: "/counselor/getAll",
+        type: "GET",
+        contentType: "application/json;charset=utf-8",
+        success: function (response) {
+
+          if(response.code===200){
+
+            if(response.data.length===0){
+              document.getElementById("recordTab").innerText="";
+              $("#recordTab").append("暂无数据");
+            }else {
+              let str = "";
+              for(let i=0;i<response.data.length;i++){
+                str = "<tr>"
+                        +"<td>" + response.data[i].userId + "</td>"
+                        +"<td>" + response.data[i].id + "</td>"
+                        +"<td>" + (response.data[i].counselorName!==null?response.data[i].counselorName:"未填写")+ "</td>"
+                        +"<td>" + (response.data[i].department!==null?response.data[i].department:"未填写")+ "</td>"
+                        +"<td>"+
+                          "<button title='分配管理的专业'  onclick='selectCounselor("+ JSON.stringify(response.data[i])+")'>选择</button>" +
+                        " </td>"
+                        +"</tr>";
+                $("#recordTab").append(str);
+              }
+            }
+          }else {
+            alert(response.message)
+          }
+        }
+      });
+    }
+    
+    
+    function selectCounselor(counselorInfo) {
+
+      if(document.cookie.length!==0){
+        // 按照分隔符截取后转换获得对象
+        const msg = document.cookie.split("; ");
+        for(let i=0; i<msg.length; i++){
+          const info = msg[i].split("=")[0];
+          if(info==="professionData"){
+            const obj = JSON.parse(msg[i].split("=")[1]);
+            const assignProfessionData={}
+            assignProfessionData.professionId=obj.id;
+            assignProfessionData.counselorId=counselorInfo.id;
+            document.cookie = "assignProfessionData=" + JSON.stringify(assignProfessionData);
+
+          }
+        }
+      }
+
+      document.cookie = "selectCounselor=" + JSON.stringify(counselorInfo)
+      x_admin_show("填写管理年限","./inputManageYear.html",400);
+
+
+    }
+
+  </script>
+  
+  <body onload="getAll()">
+
+    <div class="x-body">
+<!--      <div class="layui-row">-->
+<!--        <form class="layui-form layui-col-md12 x-so">-->
+<!--          <input class="layui-input" placeholder="开始日" name="start" id="start">-->
+<!--          <input class="layui-input" placeholder="截止日" name="end" id="end">-->
+<!--          <input type="text" name="username"  placeholder="请输入用户名" autocomplete="off" class="layui-input">-->
+<!--          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>-->
+<!--        </form>-->
+<!--      </div>-->
+<!--      <xblock>-->
+<!--        <button class="layui-btn" onclick="x_admin_show('添加用户','./member-add.html',600,400)"><i class="layui-icon"></i>添加</button>-->
+<!--        <span class="x-right" style="line-height:40px">共有数据：88 条</span>-->
+<!--      </xblock>-->
+      <table class="layui-table">
+        <thead>
+          <tr>
+            <th>用户ID</th>
+            <th>辅导员编码</th>
+            <th>姓名</th>
+            <th>所属学院</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="recordTab">
+
+        </tbody>
+      </table>
+<!--      <div class="page">-->
+<!--        <div>-->
+<!--          <a class="prev" href="">&lt;&lt;</a>-->
+<!--          <a class="num" href="">1</a>-->
+<!--          <span class="current">2</span>-->
+<!--          <a class="num" href="">3</a>-->
+<!--          <a class="num" href="">489</a>-->
+<!--          <a class="next" href="">&gt;&gt;</a>-->
+<!--        </div>-->
+<!--      </div>-->
+
+    </div>
+
+  </body>
+
+</html>

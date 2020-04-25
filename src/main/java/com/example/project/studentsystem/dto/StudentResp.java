@@ -1,4 +1,4 @@
-package com.example.project.studentsystem.entry;
+package com.example.project.studentsystem.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -6,15 +6,11 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class Student {
+public class StudentResp {
 
-    /**
-     * 学生
-     */
+    private String id;
 
-    private Long id;
-
-    private Long userId;
+    private String userId;
 
     private String name;
 
@@ -22,9 +18,14 @@ public class Student {
 
     private Integer startYear;
 
-    private Long professionId;
 
-    private Long classId;
+    private String professionId;
+
+    private String professionName;
+
+    private String classId;
+
+    private String className;
 
     private String professionDirection;
 
