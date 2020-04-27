@@ -29,10 +29,8 @@
         success: function (response) {
 
           if(response.code===200){
-              console.log("专业信息：",response)
             if(response.data.length===0){
               document.getElementById("recordTab").innerText="";
-              $("#recordTab").append("暂无数据");
             }else {
               let str = "";
               for(let i=0;i<response.data.length;i++){
@@ -90,19 +88,68 @@
 
     }
 
+
+    function search() {
+
+        const professionName = document.getElementById("professionName").value;
+        const department = document.getElementById("department").value;
+
+        const searchData={}
+        if(professionName!==""){
+            searchData.professionName=professionName;
+        }
+
+        if(department!==""){
+            searchData.department=department
+        }
+
+        $.ajax({
+            url: "/profession/findByCondition",
+            data: JSON.stringify(searchData),
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            success: function (response) {
+                if (response.code===200){
+                    if(response.data.length===0){
+                        document.getElementById("recordTab").innerText="";
+                    }else {
+                        document.getElementById("recordTab").innerText="";
+                        let str = "";
+                        for(let i=0;i<response.data.length;i++){
+                            str = "<tr>"
+                                // +"<td>" + response.data[i].id + "</td>"
+                                +"<td>" + response.data[i].professionName + "</td>"
+                                +"<td>" + response.data[i].department+ "</td>"
+                                +"<td>"+
+                                // " <span title='删除' onclick='deleteProfession("+ JSON.stringify(response.data[i])+")'><i class='layui-icon'>&#xe640;</i></span>" +
+                                "<button  onclick='assignCounselor("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配辅导员</span></button>"
+                                +"&nbsp;"+
+                                "<button  onclick='assignStudent("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>添加学生</span></button>" +
+                                " </td>"
+                                +"</tr>";
+                            $("#recordTab").append(str);
+                        }
+                    }
+                }else {
+                    alert(response.message)
+                }
+            }
+        });
+
+
+
+    }
+
   </script>
   
   <body onload="getAll()">
 
     <div class="x-body">
-<!--      <div class="layui-row">-->
-<!--        <form class="layui-form layui-col-md12 x-so">-->
-<!--          <input class="layui-input" placeholder="开始日" name="start" id="start">-->
-<!--          <input class="layui-input" placeholder="截止日" name="end" id="end">-->
-<!--          <input type="text" name="username"  placeholder="请输入用户名" autocomplete="off" class="layui-input">-->
-<!--          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>-->
-<!--        </form>-->
-<!--      </div>-->
+        <div class="layui-row layui-form  x-so">
+            <input type="text" id="professionName"  placeholder="请输入专业名" autocomplete="off" class="layui-input">
+            <input type="text" id="department"  placeholder="请输入学院" autocomplete="off" class="layui-input">
+            <button class="layui-btn"  onclick="search()"><i class="layui-icon">&#xe615;</i></button>
+        </div>
       <xblock>
         <button class="layui-btn" onclick="x_admin_show('添加专业','./profession-add.html',600,400)"><i class="layui-icon"></i>添加</button>
 <!--        <span class="x-right" style="line-height:40px">共有数据：88 条</span>-->

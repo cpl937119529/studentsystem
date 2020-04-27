@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -173,6 +174,53 @@ public class StudentService {
             });
         }
         return resultList;
+
+    }
+
+
+    /**
+     * 根据学生姓名、专业名称、入学年份进行查询
+     * @param resp
+     * @return
+     */
+    public List<StudentResp> searchByCondition(StudentResp resp){
+        //获取所有学生信息
+        List<StudentResp> studentLists = this.getAllInfo();
+
+        if(resp.getName()!=null && resp.getProfessionName()==null && resp.getStartYear()==null){
+            //根据学生姓名查询
+            return  studentLists.stream()
+                    .filter(data-> data.getName().equals(resp.getName()))
+                    .collect(Collectors.toList());
+        }else if(resp.getName()==null && resp.getProfessionName()!=null && resp.getStartYear()==null){
+            //根据专业查询
+            return  studentLists.stream()
+                    .filter(data-> data.getProfessionName()!=null && data.getProfessionName().equals(resp.getProfessionName()))
+                    .collect(Collectors.toList());
+        }else if(resp.getName()==null && resp.getProfessionName()==null && resp.getStartYear()!=null){
+            //根据入学年份查
+            return  studentLists.stream()
+                    .filter(data-> data.getStartYear().equals(resp.getStartYear()))
+                    .collect(Collectors.toList());
+        }else if(resp.getName()!=null && resp.getProfessionName()!=null && resp.getStartYear()==null){
+            //根据学生姓名,专业查询
+            return  studentLists.stream()
+                    .filter(data-> data.getName().equals(resp.getName()) && data.getProfessionName()!=null && data.getProfessionName().equals(resp.getProfessionName()))
+                    .collect(Collectors.toList());
+        }else if(resp.getName()!=null && resp.getProfessionName()==null && resp.getStartYear()!=null){
+            //根据学生姓名,入学年份查询
+            return  studentLists.stream()
+                    .filter(data-> data.getName().equals(resp.getName()) && data.getStartYear().equals(resp.getStartYear()))
+                    .collect(Collectors.toList());
+        }else if(resp.getName()==null && resp.getProfessionName()!=null && resp.getStartYear()!=null){
+            //根据专业,入学年份查询
+            return  studentLists.stream()
+                    .filter(data-> data.getProfessionName()!=null && data.getProfessionName().equals(resp.getProfessionName()) && data.getStartYear().equals(resp.getStartYear()))
+                    .collect(Collectors.toList());
+        }else {
+            //查询全部
+            return studentLists;
+        }
 
     }
 

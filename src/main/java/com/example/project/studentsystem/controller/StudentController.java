@@ -59,4 +59,15 @@ public class StudentController {
     }
 
 
+    /**
+     * 根据学生姓名、专业名称、入学年份进行查询
+     * @param resp
+     * @return
+     */
+    @PostMapping("/searchByCondition")
+    public Result<Object> searchByCondition(@RequestBody StudentResp resp){
+        return Results.newSuccessResult(studentService.searchByCondition(resp));
+    }
+
+
 }

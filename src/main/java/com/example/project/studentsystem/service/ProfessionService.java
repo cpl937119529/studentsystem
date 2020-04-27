@@ -97,4 +97,35 @@ public class ProfessionService {
     }
 
 
+    /**
+     * 根据条件查询
+     * @param resp
+     * @return
+     */
+    public List<ProfessionResp> findByCondition(ProfessionResp resp){
+        List<ProfessionResp> resultList = Lists.newArrayList();
+        QueryWrapper<Profession> professionWrapper = new QueryWrapper<>();
+        if(resp.getProfessionName()!=null && resp.getDepartment()==null){
+            professionWrapper.eq("profession_name",resp.getProfessionName());
+        }else if(resp.getProfessionName()==null && resp.getDepartment()!=null){
+            professionWrapper.eq("department",resp.getDepartment());
+        }else if(resp.getProfessionName()!=null && resp.getDepartment()!=null){
+            professionWrapper.eq("profession_name",resp.getProfessionName());
+            professionWrapper.eq("department",resp.getDepartment());
+        }
+
+        List<Profession> professions = professionMapper.selectList(professionWrapper);
+        if(CollectionUtil.isNotEmpty(professions)){
+            professions.forEach(profession -> {
+                ProfessionResp resp1 = new ProfessionResp();
+                BeanUtils.copyProperties(profession,resp1);
+                resp1.setId(profession.getId().toString());
+                resultList.add(resp1);
+            });
+        }
+
+        return resultList;
+    }
+
+
 }

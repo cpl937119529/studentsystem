@@ -77,4 +77,15 @@ public class UserController {
         return Results.newSuccessResult(userService.assignAccount(user));
     }
 
+
+    /**
+     * 根据条件查找
+     * @param userResp
+     * @return
+     */
+    @PostMapping("/findByCondition")
+    public Result<Object> findByCondition(@RequestBody UserResp userResp){
+        return Results.newSuccessResult(userService.findByCondition(userResp));
+    }
+
 }

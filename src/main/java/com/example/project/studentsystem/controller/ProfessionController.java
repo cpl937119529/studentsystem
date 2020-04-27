@@ -3,6 +3,7 @@ package com.example.project.studentsystem.controller;
 import com.example.project.studentsystem.base.Result;
 import com.example.project.studentsystem.base.Results;
 import com.example.project.studentsystem.dto.CounselorProfessionRelResp;
+import com.example.project.studentsystem.dto.ProfessionResp;
 import com.example.project.studentsystem.entry.Profession;
 import com.example.project.studentsystem.service.ProfessionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,17 @@ public class ProfessionController {
     @GetMapping("/deleteById")
     public Result<Object> deleteById(@RequestParam String id){
         return Results.newSuccessResult(professionService.deleteById(id));
+    }
+
+
+    /**
+     * 根据条件查询
+     * @param profession
+     * @return
+     */
+    @PostMapping("/findByCondition")
+    public Result<Object> findByCondition(@RequestBody ProfessionResp profession){
+        return Results.newSuccessResult(professionService.findByCondition(profession));
     }
 
 }

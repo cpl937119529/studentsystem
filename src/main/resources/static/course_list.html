@@ -23,24 +23,26 @@
 
     function getAll() {
       $.ajax({
-        url: "/counselorProfessionRel/getAll",
+        url: "/course/getAll",
         type: "GET",
         contentType: "application/json;charset=utf-8",
         success: function (response) {
+
           if(response.code===200){
 
             if(response.data.length===0){
               document.getElementById("recordTab").innerText="";
-              $("#recordTab").append("暂无数据");
             }else {
               let str = "";
               for(let i=0;i<response.data.length;i++){
                 str = "<tr>"
-                        // +"<td>" + response.data[i].id + "</td>"
+                        +"<td>" + response.data[i].id + "</td>"
+                        +"<td>" + response.data[i].courseName+ "</td>"
                         +"<td>" + response.data[i].professionName + "</td>"
-                        +"<td>" + response.data[i].counselorName+ "</td>"
-                        +"<td>" + response.data[i].startYear + "</td>"
-                        +"<td>" + response.data[i].endYear+ "</td>"
+                        +"<td>" + response.data[i].credit+ "</td>"
+                        +"<td class='td-manage'>" +
+                          " <span title='删除' onclick='deleteCourse("+JSON.stringify(response.data[i])+")'><i class='layui-icon'>&#xe640;</i></span>" +
+                        " </td>"
                         +"</tr>";
                 $("#recordTab").append(str);
               }
@@ -54,21 +56,23 @@
 
 
     function search() {
+
+      const courseName = document.getElementById("courseName").value;
       const professionName = document.getElementById("professionName").value;
-      const counselorName = document.getElementById("counselorName").value;
 
       const searchData={}
+
+      if(courseName!==""){
+        searchData.courseName=courseName
+      }
+
       if(professionName!==""){
         searchData.professionName=professionName
       }
 
-      if(counselorName!==""){
-        searchData.counselorName=counselorName
-      }
-
 
       $.ajax({
-        url: "/counselorProfessionRel/searchByCondition",
+        url: "/course/searchByCondition",
         data: JSON.stringify(searchData),
         type: "POST",
         contentType: "application/json;charset=utf-8",
@@ -83,11 +87,13 @@
               let str = "";
               for(let i=0;i<response.data.length;i++){
                 str = "<tr>"
-                        // +"<td>" + response.data[i].id + "</td>"
+                        +"<td>" + response.data[i].id + "</td>"
+                        +"<td>" + response.data[i].courseName+ "</td>"
                         +"<td>" + response.data[i].professionName + "</td>"
-                        +"<td>" + response.data[i].counselorName+ "</td>"
-                        +"<td>" + response.data[i].startYear + "</td>"
-                        +"<td>" + response.data[i].endYear+ "</td>"
+                        +"<td>" + response.data[i].credit+ "</td>"
+                        +"<td class='td-manage'>" +
+                          " <span title='删除' onclick='deleteCourse("+JSON.stringify(response.data[i])+")'><i class='layui-icon'>&#xe640;</i></span>" +
+                        " </td>"
                         +"</tr>";
                 $("#recordTab").append(str);
               }
@@ -99,8 +105,28 @@
       });
 
 
-
     }
+    
+    function deleteCourse(data) {
+      if (confirm("确定删除该课程？")) {
+        $.ajax({
+          url: "/course/deleteCourseById?id="+data.id+"",
+          type: "GET",
+          contentType: "application/json;charset=utf-8",
+          success: function (response) {
+            if (response.code===200){
+              alert("删除成功")
+             location.reload();
+
+            }else {
+              alert(response.message)
+            }
+          }
+        });
+      }
+    }
+
+
 
   </script>
   
@@ -108,18 +134,19 @@
 
     <div class="x-body">
       <div class="layui-row layui-form  x-so">
+        <input type="text" id="courseName"  placeholder="请输入课程名称" autocomplete="off" class="layui-input">
         <input type="text" id="professionName"  placeholder="请输入专业名称" autocomplete="off" class="layui-input">
-        <input type="text" id="counselorName"  placeholder="请输入辅导员姓名" autocomplete="off" class="layui-input">
         <button class="layui-btn"  onclick="search()"><i class="layui-icon">&#xe615;</i></button>
       </div>
 
       <table class="layui-table">
         <thead>
           <tr>
-            <th>专业名称</th>
-            <th>辅导员姓名</th>
-            <th>开始年份</th>
-            <th>结束年份</th>
+            <th>课程ID</th>
+            <th>课程名称</th>
+            <th>所属专业</th>
+            <th>课程学分</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody id="recordTab">
