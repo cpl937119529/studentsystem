@@ -36,15 +36,35 @@ public class UserService {
     @Autowired
     private IUserServiceImpl iUserService;
 
-    public int login(String userName,String password){
+    public LoginReq login(String userName,String password){
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("user_name",userName);
         wrapper.eq("pass_word",password);
         List<User> users = userMapper.selectList(wrapper);
         if(CollectionUtil.isNotEmpty(users)){
-            return users.get(0).getUserType();
+            LoginReq req = new LoginReq();
+            req.setUserName(userName);
+            req.setPassWord(password);
+            req.setId(users.get(0).getId().toString());
+            req.setUserType(users.get(0).getUserType());
+            Integer userType = users.get(0).getUserType();
+            if(userType==1){
+                req.setName("admin");
+            }else if(userType==2){
+                QueryWrapper<Counselor> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("user_id",users.get(0).getId());
+                List<Counselor> counselors = counselorMapper.selectList(queryWrapper);
+                req.setName(counselors.get(0).getCounselorName());
+            }else{
+                QueryWrapper<Student> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("user_id",users.get(0).getId());
+                List<Student> students = studentMapper.selectList(queryWrapper);
+                req.setName(students.get(0).getName());
+            }
+
+            return req;
         }else {
-            return -1;
+            return new LoginReq();
         }
     }
 
