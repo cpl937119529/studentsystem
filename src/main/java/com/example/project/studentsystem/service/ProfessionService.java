@@ -5,11 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.project.studentsystem.IService.IProfessionService;
 import com.example.project.studentsystem.dto.CounselorProfessionRelResp;
 import com.example.project.studentsystem.dto.ProfessionResp;
+import com.example.project.studentsystem.entry.*;
 import com.example.project.studentsystem.entry.Class;
-import com.example.project.studentsystem.entry.CounselorProfessionRel;
-import com.example.project.studentsystem.entry.Profession;
-import com.example.project.studentsystem.mapper.ClassMapper;
-import com.example.project.studentsystem.mapper.ProfessionMapper;
+import com.example.project.studentsystem.mapper.*;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,15 @@ public class ProfessionService {
 
     @Autowired
     private ClassMapper classMapper;
+
+    @Autowired
+    private CounselorProfessionRelMapper counselorProfessionRelMapper;
+
+    @Autowired
+    private StudentMapper studentMapper;
+
+    @Autowired
+    private CourseMapper courseMapper;
 
 
     /**
@@ -93,7 +100,30 @@ public class ProfessionService {
      * @return
      */
     public int deleteById(String id){
-      return professionMapper.deleteById(Long.valueOf(id));
+
+        //判断辅导员-专业关联表
+        QueryWrapper<CounselorProfessionRel> counselorProfessionRelQueryWrapper = new QueryWrapper<>();
+        counselorProfessionRelQueryWrapper.eq("profession_id",Long.valueOf(id));
+        List<CounselorProfessionRel> counselorProfessionRels = counselorProfessionRelMapper.selectList(counselorProfessionRelQueryWrapper);
+        if(CollectionUtil.isNotEmpty(counselorProfessionRels)){
+            return -1;
+        }
+
+        //判断学生-专业关联表
+        QueryWrapper<Student> studentQueryWrapper = new QueryWrapper<>();
+        studentQueryWrapper.eq("profession_id",Long.valueOf(id));
+        List<Student> students = studentMapper.selectList(studentQueryWrapper);
+        if(CollectionUtil.isNotEmpty(students)){
+            return -1;
+        }
+        //判断课程表
+        QueryWrapper<Course> courseQueryWrapper = new QueryWrapper<>();
+        courseQueryWrapper.eq("profession_id",Long.valueOf(id));
+        List<Course> courseList = courseMapper.selectList(courseQueryWrapper);
+        if(CollectionUtil.isNotEmpty(courseList)){
+            return -1;
+        }
+        return professionMapper.deleteById(Long.valueOf(id));
     }
 
 

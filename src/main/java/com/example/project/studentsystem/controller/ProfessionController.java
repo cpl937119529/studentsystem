@@ -50,7 +50,11 @@ public class ProfessionController {
      */
     @GetMapping("/deleteById")
     public Result<Object> deleteById(@RequestParam String id){
-        return Results.newSuccessResult(professionService.deleteById(id));
+        int i = professionService.deleteById(id);
+        if(i==-1){
+            return Results.newFailedResult("删除失败，该专业已被使用");
+        }
+        return Results.newSuccessResult("删除成功");
     }
 
 

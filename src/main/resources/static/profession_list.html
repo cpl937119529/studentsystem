@@ -42,7 +42,9 @@
                             // " <span title='删除' onclick='deleteProfession("+ JSON.stringify(response.data[i])+")'><i class='layui-icon'>&#xe640;</i></span>" +
                             "<button  onclick='assignCounselor("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配辅导员</span></button>"
                         +"&nbsp;"+
-                            "<button  onclick='assignStudent("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>添加学生</span></button>" +
+                            "<button  onclick='assignStudent("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>添加学生</span></button>"
+                        +"&nbsp;"+
+                    "       <button  onclick='deleteProfession("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>删除专业</span></button>" +
                         " </td>"
                         +"</tr>";
                 $("#recordTab").append(str);
@@ -124,7 +126,9 @@
                                 // " <span title='删除' onclick='deleteProfession("+ JSON.stringify(response.data[i])+")'><i class='layui-icon'>&#xe640;</i></span>" +
                                 "<button  onclick='assignCounselor("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配辅导员</span></button>"
                                 +"&nbsp;"+
-                                "<button  onclick='assignStudent("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>添加学生</span></button>" +
+                                "<button  onclick='assignStudent("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>添加学生</span></button>"
+                                +"&nbsp;"+
+                                "<button  onclick='deleteProfession("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>删除专业</span></button>" +
                                 " </td>"
                                 +"</tr>";
                             $("#recordTab").append(str);
