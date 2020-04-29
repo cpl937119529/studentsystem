@@ -125,7 +125,7 @@
                     str = "<tr>"
                             +"<td>" + response.data[i].id + "</td>"
                             +"<td>" + response.data[i].name+ "</td>"
-                            +"<td>" + (response.data[i].sex===1?"男":"女")+ "</td>"
+
                             +"<td>" + (response.data[i].professionName!=null?response.data[i].professionName:"")+ "</td>"
                             +"<td>" + (response.data[i].className!=null?response.data[i].className:"")+ "</td>"
                             +"<td>" + (response.data[i].startYear!=null?response.data[i].startYear:"")+ "</td>"
@@ -134,6 +134,12 @@
                             +"<td>" + (response.data[i].birth!=null?response.data[i].birth:"")+ "</td>"
                             +"<td>" + (response.data[i].nation!=null?response.data[i].nation:"")+ "</td>"
                             +"<td>" + (response.data[i].personNumber!=null?response.data[i].personNumber:"")+ "</td>"
+                            +"<td>" + (response.data[i].hobby!=null?response.data[i].hobby:"")+ "</td>"
+                            +"<td>" + (response.data[i].hometown!=null?response.data[i].hometown:"")+ "</td>"
+                            +"<td>" + (response.data[i].phone!=null?response.data[i].phone:"")+ "</td>"
+                            +"<td>" + (response.data[i].address!=null?response.data[i].address:"")+ "</td>"
+                            +"<td>" + (response.data[i].email!=null?response.data[i].email:"")+ "</td>"
+                            +"<td>" + (response.data[i].qq!=null?response.data[i].qq:"")+ "</td>"
 
                             +"<td>"+
                             "<button  onclick='editInfo("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>编辑</span></button>" +
