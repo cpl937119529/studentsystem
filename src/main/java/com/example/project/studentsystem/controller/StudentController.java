@@ -70,4 +70,25 @@ public class StudentController {
     }
 
 
+    /**
+     * 根据用户id查找辅导员ID并查询其管理专业下的学生信息
+     * @return
+     */
+    @GetMapping("/getStudentListByCounselor")
+    public Result<Object> getStudentListByCounselor(@RequestParam String userId){
+        return Results.newSuccessResult(studentService.getStudentListByCounselor(userId));
+    }
+
+
+    /**
+     * 根据入学年份、班级名称、专业名称查询学生信息
+     * @param resp
+     * @return
+     */
+    @PostMapping("/findByCondition")
+    public Result<Object> findByCondition(@RequestBody StudentResp resp){
+        return Results.newSuccessResult(studentService.findByCondition(resp));
+    }
+
+
 }

@@ -57,7 +57,6 @@ public class CounselorService {
      * @return
      */
     public int addCounselor(CounselorResp resp){
-
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("user_name",resp.getUserName());
         wrapper.eq("pass_word",resp.getPassWord());
@@ -65,7 +64,6 @@ public class CounselorService {
         if(CollectionUtil.isNotEmpty(users)){
             return -1;
         }
-
         User user = new User();
         user.setUserType(2);
         user.setUserName(resp.getUserName());
@@ -82,9 +80,7 @@ public class CounselorService {
         counselor.setDepartment(resp.getDepartment());
         counselor.setSex(resp.getSex());
         counselorMapper.insert(counselor);
-
         return 1;
-
     }
 
 

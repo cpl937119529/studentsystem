@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>酒店安防系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+
+      <script>
+
+
+          function getStudentInfo(){
+
+
+              if(document.cookie.length!==0){
+                  // 按照分隔符截取后转换获得对象
+                  const msg = document.cookie.split("; ");
+                  for(let i=0; i<msg.length; i++){
+                      const info = msg[i].split("=")[0];
+                      if(info==="loginUser"){
+                          const obj = JSON.parse(msg[i].split("=")[1]);
+                          $.ajax({
+                              url: "/class/getClassByUserId?userId="+obj.id+"",
+                              type: "GET",
+                              contentType: "application/json;charset=utf-8",
+                              success: function (response) {
+                                  if(response.data.length!==0){
+                                      let str = "";
+                                      for(let i=0;i<response.data.length;i++){
+                                          str = "<option>"+response.data[i].className+"</option>";
+                                          $("#studentClass").append(str);
+                                      }
+                                  }
+                              }
+                          });
+                      }
+                  }
+              }
+
+              if(document.cookie.length!==0){
+                  // 按照分隔符截取后转换获得对象
+                  const msg = document.cookie.split("; ");
+                  for(let i=0; i<msg.length; i++){
+                      const info = msg[i].split("=")[0];
+                      if(info==="editStudentInfo"){
+                          const obj = JSON.parse(msg[i].split("=")[1]);
+                          document.getElementById("studentName").value=obj.name;
+                          document.getElementById("studentId").value=obj.id;
+                          document.getElementById("professionDirection").value=obj.professionDirection;
+                          document.getElementById("politicalStatus").value=obj.politicalStatus;
+                          document.getElementById("birth").value=obj.birth;
+                          document.getElementById("nation").value=obj.nation;
+                          document.getElementById("personNumber").value=obj.personNumber;
+
+
+                      }
+                  }
+              }
+          }
+
+          function sureUpdateStudentInfo(){
+              const studentInfo={}
+              studentInfo.id= document.getElementById("studentId").value;
+              const professionDirection=document.getElementById("professionDirection").value;
+              const politicalStatus=document.getElementById("politicalStatus").value;
+              const birth=document.getElementById("birth").value;
+              const nation=document.getElementById("nation").value;
+              const personNumber=document.getElementById("personNumber").value;
+              const className=document.getElementById("studentClass").value;
+
+              if(className!==""){
+                  studentInfo.className=className;
+              }
+              if(professionDirection!==""){
+                  studentInfo.professionDirection=professionDirection;
+              }
+              if(politicalStatus!==""){
+                  studentInfo.politicalStatus=politicalStatus;
+              }
+              if(birth!==""){
+                  studentInfo.birth=birth;
+              }
+              if(nation!==""){
+                  studentInfo.nation=nation;
+              }
+              if(personNumber!==""){
+                  studentInfo.personNumber=personNumber;
+              }
+
+              $.ajax({
+                  url: "/student/updateInfo",
+                  data: JSON.stringify(studentInfo),
+                  type: "POST",
+                  contentType: "application/json;charset=utf-8",
+                  success: function (response) {
+                      console.log("sdfgsdfh:",response);
+                      if (response.code===200){
+                          alert("修改成功");
+                          window.top.location.reload();
+                      }else {
+                          alert(response.message)
+                      }
+                  }
+              });
+          }
+
+          //添加预约弹框中的时间函数
+          layui.use('laydate', function(){
+              var laydate = layui.laydate;
+
+              //执行一个laydate实例
+              laydate.render({
+                  elem: '#birth', //指定元素
+                  type:'date', // 可选择：年、月、日、时、分、秒
+                  format: 'yyyy-MM-dd', //指定时间格式
+              });
+
+          });
+
+      </script>
+
+  </head>
+  
+  <body onload="getStudentInfo()">
+    <div class="x-body">
+          <div class="layui-form-item">
+              <input type="text" id="studentId" name="studentName" style="display: none">
+              <div class="layui-form-item">
+                  <label  class="layui-form-label">
+                      学生姓名：
+                  </label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="studentName" name="studentName" required="" lay-verify="studentName"
+                             autocomplete="off" class="layui-input" disabled>
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label class="layui-form-label">
+                      出生日期：
+                  </label>
+                  <div class="layui-input-inline">
+                      <input class="layui-input" placeholder="请选择日期" name="birth" id="birth">
+                  </div>
+              </div>
+
+              <div class="layui-form-item">
+                  <label  class="layui-form-label">
+                      学生班级：
+                  </label>
+                  <div class="layui-input-inline">
+                      <select id="studentClass">
+                      </select>
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label  class="layui-form-label">
+                      专业方向：
+                  </label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="professionDirection" name="professionDirection" required="" lay-verify="professionDirection"
+                             autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label  class="layui-form-label">
+                      政治面貌：
+                  </label>
+                  <div class="layui-input-inline">
+                      <div class="layui-input-inline">
+                          <select id="politicalStatus">
+                              <option>党员</option>
+                              <option>团员</option>
+                              <option>群众</option>
+                          </select>
+                      </div>
+<!--                      <input type="text" id="politicalStatus" name="politicalStatus" required="" lay-verify="politicalStatus"-->
+<!--                             autocomplete="off" class="layui-input">-->
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label  class="layui-form-label">
+                      民族：
+                  </label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="nation" name="nation" required="" lay-verify="nation"
+                             autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+              <div class="layui-form-item">
+                  <label  class="layui-form-label">
+                      身份证号码：
+                  </label>
+                  <div class="layui-input-inline">
+                      <input type="text" id="personNumber" name="personNumber" required="" lay-verify="personNumber"
+                             autocomplete="off" class="layui-input">
+                  </div>
+              </div>
+          </div>
+
+
+          <div class="layui-form-item">
+              <label class="layui-form-label">
+              </label>
+              <button class="layui-btn"  onclick="sureUpdateStudentInfo()">
+                  确定修改
+              </button>
+          </div>
+    </div>
+
+  </body>
+
+</html>

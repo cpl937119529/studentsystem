@@ -44,7 +44,7 @@ public class ProfessionService {
      */
     public int addProfession(Profession profession){
 
-        //判断有无该专业，五则添加
+        //判断有无该专业，无则添加
         QueryWrapper<Profession> wrapper = new QueryWrapper<>();
         wrapper.eq("profession_name",profession.getProfessionName());
         List<Profession> professions = professionMapper.selectList(wrapper);
@@ -123,6 +123,12 @@ public class ProfessionService {
         if(CollectionUtil.isNotEmpty(courseList)){
             return -1;
         }
+
+        QueryWrapper<Class> classWrapper = new QueryWrapper<>();
+        classWrapper.eq("profession_id",Long.valueOf(id));
+
+        classMapper.delete(classWrapper);
+
         return professionMapper.deleteById(Long.valueOf(id));
     }
 
@@ -156,6 +162,5 @@ public class ProfessionService {
 
         return resultList;
     }
-
 
 }

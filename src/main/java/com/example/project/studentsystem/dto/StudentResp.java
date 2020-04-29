@@ -18,12 +18,9 @@ public class StudentResp {
 
     private Integer startYear;
 
-
     private String professionId;
 
     private String professionName;
-
-    private String classId;
 
     private String className;
 
@@ -31,8 +28,7 @@ public class StudentResp {
 
     private String politicalStatus;
 
-    @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd")
-    private LocalDateTime birth;
+    private String birth;
 
     private String nation;
 
