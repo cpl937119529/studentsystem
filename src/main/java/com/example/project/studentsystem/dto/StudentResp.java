@@ -45,6 +45,8 @@ public class StudentResp {
 
     private String qq;
 
+    private String phone;
+
     private String userName;
 
     private String passWord;

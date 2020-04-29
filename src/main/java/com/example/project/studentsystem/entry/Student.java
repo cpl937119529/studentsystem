@@ -49,4 +49,6 @@ public class Student {
 
     private String qq;
 
+    private String phone;
+
 }
