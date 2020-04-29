@@ -90,5 +90,14 @@ public class StudentController {
         return Results.newSuccessResult(studentService.findByCondition(resp));
     }
 
+    /**
+     * 根据用户ID获取学生信息
+     * @return
+     */
+    @GetMapping("/getInfoByUserId")
+    public Result<Object> getInfoByUserId(@RequestParam String userId){
+        return Results.newSuccessResult(studentService.getInfoByUserId(userId));
+    }
+
 
 }
