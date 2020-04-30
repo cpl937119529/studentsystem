@@ -80,12 +80,12 @@
 
     function addScores(data) {
       document.cookie = "editStudentInfo=" + JSON.stringify(data)
-      x_admin_show("修改学生信息","./ add_scores_student.html",500);
+      x_admin_show("加分单","./add_scores_student.html",500);
     }
 
     function reduceScores(data) {
       document.cookie = "editStudentInfo=" + JSON.stringify(data)
-      x_admin_show("修改学生信息","./ add_scores_student.html",500);
+      x_admin_show("扣分单","./reduce_score_student.html",500);
     }
     
     function editInfo(data) {
