@@ -53,15 +53,17 @@
                             +"<td>" + (response.data[i].nation!=null?response.data[i].nation:"")+ "</td>"
                             +"<td>" + (response.data[i].personNumber!=null?response.data[i].personNumber:"")+ "</td>"
 
-                            +"<td>" + (response.data[i].hobby!=null?response.data[i].hobby:"")+ "</td>"
-                            +"<td>" + (response.data[i].hometown!=null?response.data[i].hometown:"")+ "</td>"
-                            +"<td>" + (response.data[i].phone!=null?response.data[i].phone:"")+ "</td>"
-                            +"<td>" + (response.data[i].address!=null?response.data[i].address:"")+ "</td>"
-                            +"<td>" + (response.data[i].email!=null?response.data[i].email:"")+ "</td>"
-                            +"<td>" + (response.data[i].qq!=null?response.data[i].qq:"")+ "</td>"
+                            // +"<td>" + (response.data[i].hobby!=null?response.data[i].hobby:"")+ "</td>"
+                            // +"<td>" + (response.data[i].hometown!=null?response.data[i].hometown:"")+ "</td>"
+                            // +"<td>" + (response.data[i].phone!=null?response.data[i].phone:"")+ "</td>"
+                            // +"<td>" + (response.data[i].address!=null?response.data[i].address:"")+ "</td>"
+                            // +"<td>" + (response.data[i].email!=null?response.data[i].email:"")+ "</td>"
+                            // +"<td>" + (response.data[i].qq!=null?response.data[i].qq:"")+ "</td>"
 
                             +"<td>"+
                             "<button  onclick='editInfo("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>编辑</span></button>" +
+                            "<button  onclick='addScores("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>加分</span></button>" +
+                            "<button  onclick='reduceScores("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>扣分</span></button>" +
                             " </td>"
                             +"</tr>";
                     $("#recordTab").append(str);
@@ -74,6 +76,16 @@
         }
       }
 
+    }
+
+    function addScores(data) {
+      document.cookie = "editStudentInfo=" + JSON.stringify(data)
+      x_admin_show("修改学生信息","./ add_scores_student.html",500);
+    }
+
+    function reduceScores(data) {
+      document.cookie = "editStudentInfo=" + JSON.stringify(data)
+      x_admin_show("修改学生信息","./ add_scores_student.html",500);
     }
     
     function editInfo(data) {
@@ -134,12 +146,12 @@
                             +"<td>" + (response.data[i].birth!=null?response.data[i].birth:"")+ "</td>"
                             +"<td>" + (response.data[i].nation!=null?response.data[i].nation:"")+ "</td>"
                             +"<td>" + (response.data[i].personNumber!=null?response.data[i].personNumber:"")+ "</td>"
-                            +"<td>" + (response.data[i].hobby!=null?response.data[i].hobby:"")+ "</td>"
-                            +"<td>" + (response.data[i].hometown!=null?response.data[i].hometown:"")+ "</td>"
-                            +"<td>" + (response.data[i].phone!=null?response.data[i].phone:"")+ "</td>"
-                            +"<td>" + (response.data[i].address!=null?response.data[i].address:"")+ "</td>"
-                            +"<td>" + (response.data[i].email!=null?response.data[i].email:"")+ "</td>"
-                            +"<td>" + (response.data[i].qq!=null?response.data[i].qq:"")+ "</td>"
+                            // +"<td>" + (response.data[i].hobby!=null?response.data[i].hobby:"")+ "</td>"
+                            // +"<td>" + (response.data[i].hometown!=null?response.data[i].hometown:"")+ "</td>"
+                            // +"<td>" + (response.data[i].phone!=null?response.data[i].phone:"")+ "</td>"
+                            // +"<td>" + (response.data[i].address!=null?response.data[i].address:"")+ "</td>"
+                            // +"<td>" + (response.data[i].email!=null?response.data[i].email:"")+ "</td>"
+                            // +"<td>" + (response.data[i].qq!=null?response.data[i].qq:"")+ "</td>"
 
                             +"<td>"+
                             "<button  onclick='editInfo("+ JSON.stringify(response.data[i])+")'><span class='layui-btn layui-btn-normal layui-btn-mini'>编辑</span></button>" +
@@ -187,12 +199,12 @@
             <th>民族</th>
             <th>身份证号</th>
 
-            <th>爱好</th>
-            <th>籍贯</th>
-            <th>电话</th>
-            <th>家庭住址</th>
-            <th>邮箱</th>
-            <th>QQ</th>
+<!--            <th>爱好</th>-->
+<!--            <th>籍贯</th>-->
+<!--            <th>电话</th>-->
+<!--            <th>家庭住址</th>-->
+<!--            <th>邮箱</th>-->
+<!--            <th>QQ</th>-->
 
             <th>操作</th>
           </tr>
