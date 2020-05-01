@@ -58,4 +58,15 @@ public class BonusRecordController {
     }
 
 
+    /**
+     * 获取该学生下的加分记录
+     * @param studentUserId
+     * @return
+     */
+    @GetMapping("/getListByStudentUserId")
+    public Result<Object> getListByStudentUserId(@RequestParam String studentUserId){
+        return Results.newSuccessResult(bonusRecordService.getListByStudentUserId(studentUserId));
+    }
+
+
 }

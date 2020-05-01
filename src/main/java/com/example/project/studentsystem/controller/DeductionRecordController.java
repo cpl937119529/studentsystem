@@ -60,5 +60,16 @@ public class DeductionRecordController {
     }
 
 
+    /**
+     * 获取该学生下的扣分记录
+     * @param studentUserId
+     * @return
+     */
+    @GetMapping("/getListByStudentUserId")
+    public Result<Object> getListByStudentUserId(@RequestParam String studentUserId){
+        return Results.newSuccessResult(deductionRecordService.getListByStudentUserId(studentUserId));
+    }
+
+
 
 }

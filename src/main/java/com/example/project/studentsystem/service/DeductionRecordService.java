@@ -144,4 +144,42 @@ public class DeductionRecordService {
     }
 
 
+
+    /**
+     * 获取该学生下的扣分记录
+     * @param studentUserId
+     * @return
+     */
+    public List<DeductionRecordResp> getListByStudentUserId(String studentUserId){
+        List<DeductionRecordResp> resultList = Lists.newArrayList();
+
+        //根据studentUserId获取学生信息
+        QueryWrapper<Student> studentQueryWrapper = new QueryWrapper<>();
+        studentQueryWrapper.eq("user_id",Long.valueOf(studentUserId));
+        List<Student> students = studentMapper.selectList(studentQueryWrapper);
+        Student student = students.get(0);
+
+        QueryWrapper<DeductionRecord> bonusRecordQueryWrapper = new QueryWrapper<>();
+        bonusRecordQueryWrapper.eq("student_id",student.getId());
+        List<DeductionRecord> bonusRecords = deductionRecordMapper.selectList(bonusRecordQueryWrapper);
+        if(CollectionUtil.isNotEmpty(bonusRecords)){
+
+            bonusRecords.forEach(bonusRecord -> {
+                DeductionRecordResp resp = new DeductionRecordResp();
+                BeanUtils.copyProperties(bonusRecord,resp);
+                resp.setId(bonusRecord.getId().toString());
+                resp.setStudentId(student.getId().toString());
+                resp.setStudentName(student.getName());
+                resp.setCounselorId(bonusRecord.getCounselorId().toString());
+                Counselor counselor = counselorMapper.selectById(bonusRecord.getCounselorId());
+                resp.setCounselorName(counselor.getCounselorName());
+                resultList.add(resp);
+            });
+
+        }
+
+        return  resultList;
+    }
+
+
 }

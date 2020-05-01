@@ -144,5 +144,42 @@ public class BonusRecordService {
     }
 
 
+    /**
+     * 获取该学生下的加分记录
+     * @param studentUserId
+     * @return
+     */
+    public List<BonusRecordResp> getListByStudentUserId(String studentUserId){
+        List<BonusRecordResp> resultList = Lists.newArrayList();
+
+        //根据studentUserId获取学生信息
+        QueryWrapper<Student> studentQueryWrapper = new QueryWrapper<>();
+        studentQueryWrapper.eq("user_id",Long.valueOf(studentUserId));
+        List<Student> students = studentMapper.selectList(studentQueryWrapper);
+        Student student = students.get(0);
+
+        QueryWrapper<BonusRecord> bonusRecordQueryWrapper = new QueryWrapper<>();
+        bonusRecordQueryWrapper.eq("student_id",student.getId());
+        List<BonusRecord> bonusRecords = bonusRecordMapper.selectList(bonusRecordQueryWrapper);
+        if(CollectionUtil.isNotEmpty(bonusRecords)){
+
+            bonusRecords.forEach(bonusRecord -> {
+                BonusRecordResp resp = new BonusRecordResp();
+                BeanUtils.copyProperties(bonusRecord,resp);
+                resp.setId(bonusRecord.getId().toString());
+                resp.setStudentId(student.getId().toString());
+                resp.setStudentName(student.getName());
+                resp.setCounselorId(bonusRecord.getCounselorId().toString());
+                Counselor counselor = counselorMapper.selectById(bonusRecord.getCounselorId());
+                resp.setCounselorName(counselor.getCounselorName());
+                resultList.add(resp);
+            });
+
+        }
+
+        return  resultList;
+    }
+
+
 
 }
