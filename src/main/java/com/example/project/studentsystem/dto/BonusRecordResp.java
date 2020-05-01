@@ -23,4 +23,8 @@ public class BonusRecordResp {
 
     private String counselorUserId;
 
+    private String studentName;
+
+    private String counselorName;
+
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
-  
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <title>高校学生综合测评系统</title>
     <meta name="renderer" content="webkit">
@@ -14,12 +14,12 @@
     <script type="text/javascript" src="./js/xadmin.js"></script>
     <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
     <!--[if lt IE 9]>
-      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
-      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
+</head>
 
-  <script>
+<script>
 
     function getAll() {
         if(document.cookie.length!==0) {
@@ -30,7 +30,7 @@
                 if (info === "loginUser") {
                     const obj = JSON.parse(msg[i].split("=")[1]);
                     $.ajax({
-                        url: "/bonusRecord/getByUserId?userId="+obj.id+"",
+                        url: "/deductionRecord/getByUserId?userId="+obj.id+"",
                         type: "GET",
                         contentType: "application/json;charset=utf-8",
                         success: function (response) {
@@ -66,22 +66,22 @@
     }
 
     function deleteRecord(record) {
-      if (confirm("确定删除吗？")) {
-        $.ajax({
-          url: "/bonusRecord/deleteById?id="+record.id,
-          type: "GET",
-          contentType: "application/json;charset=utf-8",
-          success: function (response) {
-            if (response.code===200){
-              alert("删除成功");
-              location.reload();
-            }else {
-              alert(response.message)
-            }
-          }
-        });
+        if (confirm("确定删除吗？")) {
+            $.ajax({
+                url: "/deductionRecord/deleteById?id="+record.id,
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                success: function (response) {
+                    if (response.code===200){
+                        alert("删除成功");
+                        location.reload();
+                    }else {
+                        alert(response.message)
+                    }
+                }
+            });
 
-      }
+        }
     }
 
     function search() {
@@ -99,7 +99,7 @@
         }
 
         $.ajax({
-            url: "/bonusRecord/getListByCondition",
+            url: "/deductionRecord/getListByCondition",
             data: JSON.stringify(searchData),
             type: "POST",
             contentType: "application/json;charset=utf-8",
@@ -134,60 +134,60 @@
 
     }
 
-  </script>
-  
-  <body onload="getAll()">
+</script>
 
-    <div class="x-body">
-        <div class="layui-row layui-form  x-so">
-            <input type="text" id="year"  placeholder="请输入学年年份" autocomplete="off" class="layui-input">
-            <div class="layui-input-inline">
-                <select id="type">
-                    <option value="All">所有类型</option>
-                    <option value="学科竞赛">学科竞赛</option>
-                    <option value="创新创业">创新创业</option>
-                    <option value="学生干部">学生干部</option>
-                    <option value="志愿活动">志愿活动</option>
-                    <option value="社团活动">社团活动</option>
-                    <option value="其他类型">其他类型</option>
-                </select>
-            </div>
-            <button class="layui-btn"  onclick="search()"><i class="layui-icon">&#xe615;</i></button>
+<body onload="getAll()">
+
+<div class="x-body">
+    <div class="layui-row layui-form  x-so">
+        <input type="text" id="year"  placeholder="请输入学年年份" autocomplete="off" class="layui-input">
+        <div class="layui-input-inline">
+            <select id="type">
+                <option value="All">所有类型</option>
+                <option value="上课迟到">上课迟到</option>
+                <option value="违反纪律">违反纪律</option>
+                <option value="打架斗殴">打架斗殴</option>
+                <option value="考试作弊">考试作弊</option>
+                <option value="上课睡觉">上课睡觉</option>
+                <option value="其他原因">其他原因</option>
+            </select>
         </div>
-      <xblock>
-<!--        <button class="layui-btn" onclick="x_admin_show('添加专业','./profession-add.html',600,400)"><i class="layui-icon"></i>添加</button>-->
-<!--        <span class="x-right" style="line-height:40px">共有数据：88 条</span>-->
-      </xblock>
-      <table class="layui-table">
+        <button class="layui-btn"  onclick="search()"><i class="layui-icon">&#xe615;</i></button>
+    </div>
+    <xblock>
+        <!--        <button class="layui-btn" onclick="x_admin_show('添加专业','./profession-add.html',600,400)"><i class="layui-icon"></i>添加</button>-->
+        <!--        <span class="x-right" style="line-height:40px">共有数据：88 条</span>-->
+    </xblock>
+    <table class="layui-table">
         <thead>
-          <tr>
-              <th>学号</th>
-              <th>姓名</th>
-              <th>类型</th>
-              <th>内容</th>
-              <th>分数</th>
-              <th>年份</th>
-              <th>学期</th>
-              <th>操作</th>
-          </tr>
+        <tr>
+            <th>学号</th>
+            <th>姓名</th>
+            <th>类型</th>
+            <th>内容</th>
+            <th>分数</th>
+            <th>年份</th>
+            <th>学期</th>
+            <th>操作</th>
+        </tr>
         </thead>
         <tbody id="recordTab">
 
         </tbody>
-      </table>
-<!--      <div class="page">-->
-<!--        <div>-->
-<!--          <a class="prev" href="">&lt;&lt;</a>-->
-<!--          <a class="num" href="">1</a>-->
-<!--          <span class="current">2</span>-->
-<!--          <a class="num" href="">3</a>-->
-<!--          <a class="num" href="">489</a>-->
-<!--          <a class="next" href="">&gt;&gt;</a>-->
-<!--        </div>-->
-<!--      </div>-->
+    </table>
+    <!--      <div class="page">-->
+    <!--        <div>-->
+    <!--          <a class="prev" href="">&lt;&lt;</a>-->
+    <!--          <a class="num" href="">1</a>-->
+    <!--          <span class="current">2</span>-->
+    <!--          <a class="num" href="">3</a>-->
+    <!--          <a class="num" href="">489</a>-->
+    <!--          <a class="next" href="">&gt;&gt;</a>-->
+    <!--        </div>-->
+    <!--      </div>-->
 
-    </div>
+</div>
 
-  </body>
+</body>
 
 </html>
