@@ -1,19 +1,19 @@
-package com.example.project.studentsystem.entry;
+package com.example.project.studentsystem.dto;
 
 import lombok.Data;
 
 @Data
-public class StudentTranscript {
+public class StudentTranscriptResp {
 
     /**
      * 学生成绩
      */
 
-    private Long id;
+    private String id;
 
-    private Long studentId;
+    private String studentId;
 
-    private Long courseId;
+    private String courseId;
 
     private Integer score;
 
@@ -22,4 +22,5 @@ public class StudentTranscript {
     private Integer year;
 
     private Integer semester;
+
 }

@@ -54,7 +54,7 @@
             var form = new FormData(); // FormData 对象
             form.append("file", fileObj); // 文件对象
             $.ajax({
-                url: '/course/importByExcel',                      //url地址
+                url: '/studentTranscript/importByExcel',                      //url地址
                 type: 'POST',                 //上传方式
                 data: form,                   // 上传formdata封装的数据
                 dataType: 'JSON',
@@ -63,7 +63,7 @@
                 contentType: false,         // jQuery不要去设置Content-Type请求头
                 success:function (data) {
                     if(data.code===200){
-                        alert("导入课程成功")
+                        alert("导入成绩成功")
                     }else {
                         alert(data.message)
                     }
@@ -89,9 +89,7 @@
             <li class="layui-nav-item">
                 <a href="javascript:;" >增加</a>
                 <dl class="layui-nav-child"> <!-- 二级菜单 -->
-                    <dd style="cursor: pointer; "> <a onclick="x_admin_show('添加辅导员','./counselor-add.html',600,600)"><i class="iconfont">&#xe6a2;</i>辅导员</a></dd>
-                    <dd style="cursor: pointer; "><a onclick="x_admin_show('添加学生','./student-add.html',600,600)"><i class="iconfont">&#xe6a8;</i>学生</a></dd>
-                    <dd style="cursor: pointer; "><a onclick="importCourse()"><i class="iconfont">&#xe6b8;</i>课程</a></dd>
+                    <dd style="cursor: pointer; "><a onclick="importCourse()"><i class="iconfont">&#xe6b8;</i>成绩</a></dd>
                     <input type="file" id="file" name="myfile" style="display: none" />
                 </dl>
             </li>
