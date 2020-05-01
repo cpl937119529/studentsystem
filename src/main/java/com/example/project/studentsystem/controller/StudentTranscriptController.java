@@ -82,7 +82,7 @@ public class StudentTranscriptController {
                 if(Integer.valueOf(info.getScore())<60){
                     studentTranscript.setCredit(0.00);
                 }else {
-                    studentTranscript.setCredit(((course.getCredit() * Double.valueOf(info.getScore()))/100));
+                    studentTranscript.setCredit(Double.valueOf(course.getCredit()));
                 }
 
                 studentTranscripts.add(studentTranscript);
