@@ -11,17 +11,16 @@ import com.example.project.studentsystem.IService.impl.IStudentTranscriptService
 import com.example.project.studentsystem.base.Result;
 import com.example.project.studentsystem.base.Results;
 import com.example.project.studentsystem.dto.StudentTranscriptReqForExcel;
+import com.example.project.studentsystem.dto.StudentTranscriptResp;
 import com.example.project.studentsystem.entry.Course;
 import com.example.project.studentsystem.entry.StudentTranscript;
 import com.example.project.studentsystem.mapper.CourseMapper;
 import com.example.project.studentsystem.mapper.StudentTranscriptMapper;
+import com.example.project.studentsystem.service.StudentTranscriptService;
 import com.example.project.studentsystem.utils.ExcelListener;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedInputStream;
@@ -38,10 +37,10 @@ public class StudentTranscriptController {
     private IStudentTranscriptServiceImpl iStudentService;
 
     @Autowired
-    private StudentTranscriptMapper studentTranscriptMapper;
+    private CourseMapper courseMapper;
 
     @Autowired
-    private CourseMapper courseMapper;
+    private StudentTranscriptService studentTranscriptService;
 
 
     @PostMapping("/importByExcel")
@@ -111,5 +110,45 @@ public class StudentTranscriptController {
         }
         return Results.newSuccessResult("导入异常");
     }
+
+
+    /**
+     * 获取该辅导员下学生的成绩信息
+     * @param userId
+     * @return
+     */
+    @GetMapping("/getByCounselorUserId")
+    public Result<Object> getByCounselorUserId(@RequestParam String userId){
+        return Results.newSuccessResult(studentTranscriptService.getByCounselorUserId(userId));
+    }
+
+
+    /**
+     * 根据条件查询
+     * @param resp
+     * @return
+     */
+    @PostMapping("/findByCondition")
+    public Result<Object> findByCondition(@RequestBody StudentTranscriptResp resp){
+        return Results.newSuccessResult(studentTranscriptService.findByCondition(resp));
+    }
+
+
+    @GetMapping("/findByStudentUserId")
+    public Result<Object> findByStudentUserId(@RequestParam String userId){
+        return Results.newSuccessResult(studentTranscriptService.findByStudentUserId(userId));
+    }
+
+
+    /**
+     * 根据条件查询改学生的成绩
+     * @param resp
+     * @return
+     */
+    @PostMapping("/findByConditionWithStudent")
+    public Result<Object> findByConditionWithStudent(@RequestBody StudentTranscriptResp resp){
+        return Results.newSuccessResult(studentTranscriptService.findByConditionWithStudent(resp));
+    }
+
 
 }

@@ -23,4 +23,15 @@ public class StudentTranscriptResp {
 
     private Integer semester;
 
+    private String studentName;
+
+    private String courseName;
+
+    private String professionName;
+
+    private String className;
+
+    private String userId;
+
+
 }
