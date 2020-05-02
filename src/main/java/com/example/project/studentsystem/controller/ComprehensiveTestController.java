@@ -6,10 +6,7 @@ import com.example.project.studentsystem.base.Results;
 import com.example.project.studentsystem.dto.ComprehensiveTestResp;
 import com.example.project.studentsystem.service.ComprehensiveTestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/comprehensiveTest")
@@ -31,6 +28,33 @@ public class ComprehensiveTestController {
     @PostMapping("/sendTotalScore")
     public Result<Object> sendTotalScore(@RequestBody ComprehensiveTestResp resp){
         return Results.newSuccessResult(comprehensiveTestService.sendTotalScore(resp));
+    }
+
+    /**
+     * 获取该辅导员管辖下的所有已发布的学生的综测成绩
+     * @param userId
+     * @return
+     */
+    @GetMapping("/getAll")
+    public Result<Object> getAll(@RequestParam String userId){
+        return Results.newSuccessResult(comprehensiveTestService.getAll(userId));
+    }
+
+
+    @PostMapping("/findByCondition")
+    public Result<Object> findByCondition(@RequestBody ComprehensiveTestResp resp){
+        return Results.newSuccessResult(comprehensiveTestService.findByCondition(resp));
+    }
+
+
+    @GetMapping("/getAllByStudentUserId")
+    public Result<Object> getAllByStudentUserId(@RequestParam String userId){
+        return Results.newSuccessResult(comprehensiveTestService.getAllByStudentUserId(userId));
+    }
+
+    @PostMapping("/findByConditionWithStudent")
+    public Result<Object> findByConditionWithStudent(@RequestBody ComprehensiveTestResp resp){
+        return Results.newSuccessResult(comprehensiveTestService.findByConditionWithStudent(resp));
     }
 
 }

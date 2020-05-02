@@ -8,6 +8,7 @@ import com.example.project.studentsystem.entry.*;
 import com.example.project.studentsystem.mapper.*;
 import com.google.common.collect.Lists;
 import org.checkerframework.checker.units.qual.C;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -176,4 +177,167 @@ public class ComprehensiveTestService {
         }
         return temp;
     }
+
+    /**
+     * 获取该辅导员管辖下的所有已发布的学生的综测成绩
+     * @param userId
+     * @return
+     */
+    public List<ComprehensiveTestResp> getAll(String userId){
+        List<ComprehensiveTestResp> resultList = Lists.newArrayList();
+        QueryWrapper<Counselor> counselorQueryWrapper = new QueryWrapper<>();
+        counselorQueryWrapper.eq("user_id",Long.valueOf(userId));
+        List<Counselor> counselors = counselorMapper.selectList(counselorQueryWrapper);
+
+        //获取该辅导员管理的专业信息
+        QueryWrapper<CounselorProfessionRel> counselorProfessionRelQueryWrapper = new QueryWrapper<>();
+        counselorProfessionRelQueryWrapper.eq("counselor_id",counselors.get(0).getId());
+        List<CounselorProfessionRel> counselorProfessionRels = counselorProfessionRelMapper.selectList(counselorProfessionRelQueryWrapper);
+        if(CollectionUtil.isNotEmpty(counselorProfessionRels)){
+            //有管辖专业，根据专业id和入学年份查找其专业下的学生
+            counselorProfessionRels.forEach(rel->{
+                QueryWrapper<Student> studentQueryWrapper = new QueryWrapper<>();
+                studentQueryWrapper.eq("profession_id",rel.getProfessionId())
+                            .eq("start_year",rel.getStartYear());
+                List<Student> students = studentMapper.selectList(studentQueryWrapper);
+
+                if(CollectionUtil.isNotEmpty(students)){
+                    //有学生信息,获取这些学生的综测成绩信息
+                    students.forEach(student -> {
+                        QueryWrapper<ComprehensiveTest> comprehensiveTestQueryWrapper = new QueryWrapper<>();
+                        comprehensiveTestQueryWrapper.eq("student_id",student.getId());
+                        List<ComprehensiveTest> comprehensiveTests = comprehensiveTestMapper.selectList(comprehensiveTestQueryWrapper);
+                        if(CollectionUtil.isNotEmpty(comprehensiveTests)){
+                            //有该学生的综测成绩
+                            comprehensiveTests.forEach(comprehensiveTest -> {
+                                ComprehensiveTestResp resp = new ComprehensiveTestResp();
+                                BeanUtils.copyProperties(comprehensiveTest,resp);
+
+                                resp.setId(comprehensiveTest.getId().toString());
+                                resp.setStudentId(comprehensiveTest.getStudentId().toString());
+                                resp.setProfessionId(rel.getProfessionId().toString());
+                                resp.setStudentName(student.getName());
+                                resp.setClassName(student.getClassName());
+                                resp.setProfessionName(professionMapper.selectById(rel.getProfessionId()).getProfessionName());
+                                resultList.add(resp);
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        return resultList;
+    }
+
+
+    /**
+     * 根据条件查询
+     * @param resp
+     * @return
+     */
+    public List<ComprehensiveTestResp> findByCondition(ComprehensiveTestResp resp){
+        List<ComprehensiveTestResp> resultList = this.getAll(resp.getUserId());
+
+        if(resp.getProfessionName()!=null && resp.getYear()==null && resp.getSemester()==null){
+            return resultList.stream().filter(data->data.getProfessionName().equals(resp.getProfessionName())).collect(Collectors.toList());
+        }
+
+        if(resp.getProfessionName()!=null && resp.getYear()!=null && resp.getSemester()==null){
+            return resultList.stream().filter(data->data.getProfessionName().equals(resp.getProfessionName()) && data.getYear().equals(resp.getYear())).collect(Collectors.toList());
+        }
+
+        if(resp.getProfessionName()!=null && resp.getYear()!=null && resp.getSemester()!=null){
+            return resultList.stream().filter(data->data.getProfessionName().equals(resp.getProfessionName()) && data.getYear().equals(resp.getYear()) && data.getSemester().equals(resp.getSemester())).collect(Collectors.toList());
+        }
+
+        if(resp.getProfessionName()==null && resp.getYear()!=null && resp.getSemester()!=null){
+            return resultList.stream().filter(data->data.getYear().equals(resp.getYear()) && data.getSemester().equals(resp.getSemester())).collect(Collectors.toList());
+        }
+
+        if(resp.getProfessionName()==null && resp.getYear()==null && resp.getSemester()!=null){
+            return resultList.stream().filter(data-> data.getSemester().equals(resp.getSemester())).collect(Collectors.toList());
+        }
+
+        if(resp.getProfessionName()!=null && resp.getYear()==null && resp.getSemester()!=null){
+            return resultList.stream().filter(data->data.getProfessionName().equals(resp.getProfessionName()) && data.getSemester().equals(resp.getSemester())).collect(Collectors.toList());
+        }
+
+        if(resp.getProfessionName()==null && resp.getYear()!=null && resp.getSemester()==null){
+            return resultList.stream().filter(data->data.getYear().equals(resp.getYear())).collect(Collectors.toList());
+        }
+
+        return resultList;
+    }
+
+
+    /**
+     * 获取与当前登录的学生的所有一同入学的综测成绩
+     * @param userId
+     * @return
+     */
+    public List<ComprehensiveTestResp> getAllByStudentUserId(String userId){
+        List<ComprehensiveTestResp> resultList = Lists.newArrayList();
+
+        QueryWrapper<Student> studentQueryWrapper = new QueryWrapper<>();
+        studentQueryWrapper.eq("user_id",Long.valueOf(userId));
+        List<Student> students = studentMapper.selectList(studentQueryWrapper);
+
+        //获取与当前学期同一年入学同一个专业的学生
+        QueryWrapper<Student> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("profession_id",students.get(0).getProfessionId())
+                .eq("start_year",students.get(0).getStartYear());
+        List<Student> students1 = studentMapper.selectList(queryWrapper);
+        if(CollectionUtil.isNotEmpty(students1)){
+
+            students1.forEach(student -> {
+                QueryWrapper<ComprehensiveTest> comprehensiveTestQueryWrapper = new QueryWrapper<>();
+                comprehensiveTestQueryWrapper.eq("student_id",student.getId());
+                List<ComprehensiveTest> comprehensiveTests = comprehensiveTestMapper.selectList(comprehensiveTestQueryWrapper);
+                if(CollectionUtil.isNotEmpty(comprehensiveTests)){
+                    //有该学生的综测成绩
+                    comprehensiveTests.forEach(comprehensiveTest -> {
+                        ComprehensiveTestResp resp = new ComprehensiveTestResp();
+                        BeanUtils.copyProperties(comprehensiveTest,resp);
+
+                        resp.setId(comprehensiveTest.getId().toString());
+                        resp.setStudentId(comprehensiveTest.getStudentId().toString());
+                        resp.setProfessionId(student.getProfessionId().toString());
+                        resp.setStudentName(student.getName());
+                        resp.setClassName(student.getClassName());
+                        resp.setProfessionName(professionMapper.selectById(student.getProfessionId()).getProfessionName());
+                        resultList.add(resp);
+                    });
+                }
+            });
+
+        }
+
+        return resultList;
+    }
+
+
+    /**
+     * 获取与当前登录的学生的所有一同入学的综测成绩,根据条件查询
+     * @param resp
+     * @return
+     */
+    public List<ComprehensiveTestResp>  findByConditionWithStudent(ComprehensiveTestResp resp){
+        List<ComprehensiveTestResp> resultList = this.getAllByStudentUserId(resp.getUserId());
+
+        if(resp.getYear()!=null && resp.getSemester()==null){
+            return resultList.stream().filter(data->data.getYear().equals(resp.getYear())).collect(Collectors.toList());
+        }
+
+        if(resp.getYear()==null && resp.getSemester()!=null){
+            return resultList.stream().filter(data->data.getSemester().equals(resp.getSemester())).collect(Collectors.toList());
+        }
+
+        if(resp.getYear()!=null && resp.getSemester()!=null){
+            return resultList.stream().filter(data-> data.getYear().equals(resp.getYear()) && data.getSemester().equals(resp.getSemester())).collect(Collectors.toList());
+        }
+
+        return resultList;
+    }
+
+
 }
