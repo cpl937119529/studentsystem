@@ -28,4 +28,9 @@ public class ComprehensiveTestController {
         return Results.newSuccessResult(comprehensiveTestService.getTotalScoreByCounselorUserId(resp));
     }
 
+    @PostMapping("/sendTotalScore")
+    public Result<Object> sendTotalScore(@RequestBody ComprehensiveTestResp resp){
+        return Results.newSuccessResult(comprehensiveTestService.sendTotalScore(resp));
+    }
+
 }

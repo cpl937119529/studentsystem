@@ -34,29 +34,6 @@
               searchData.semester=semester;
 
               if (confirm("确定计算此专业该学年学期的综测成绩吗？")) {
-                  $.ajax({
-                      url: "/profession/deleteById?id="+professionData.id,
-                      type: "GET",
-                      contentType: "application/json;charset=utf-8",
-                      success: function (response) {
-                          if (response.code===200){
-                              alert("删除成功");
-                              location.reload();
-                          }else {
-                              alert(response.message)
-                          }
-                      }
-                  });
-
-              }
-
-
-          }else if(professionName==="" && year!=="" && semester!==""){
-              searchData.year=year;
-              searchData.semester=semester;
-
-              if (confirm("确定该学年学期所有专业的综测成绩吗？")) {
-
                   if(document.cookie.length!==0) {
                       // 按照分隔符截取后转换获得对象
                       const msg = document.cookie.split("; ");
@@ -93,6 +70,7 @@
                                                   $("#recordTab").append(str);
                                               }
                                           }
+                                          document.getElementById("sendTotal").style.display="block";
                                       }else {
                                           alert(response.message)
                                       }
@@ -103,10 +81,115 @@
                   }
 
               }
+
+
+          }else if(professionName==="" && year!=="" && semester!==""){
+              searchData.year=year;
+              searchData.semester=semester;
+
+              if (confirm("确定该学年学期所有专业的综测成绩吗？")) {
+
+                  if(document.cookie.length!==0) {
+                              // 按照分隔符截取后转换获得对象
+                              const msg = document.cookie.split("; ");
+                              for (let i = 0; i < msg.length; i++) {
+                                  const info = msg[i].split("=")[0];
+                                  if (info === "loginUser") {
+                                      const obj = JSON.parse(msg[i].split("=")[1]);
+                                      searchData.userId=obj.id;
+                                      $.ajax({
+                                          url: "/comprehensiveTest/getTotalScoreByCounselorUserId",
+                                          data: JSON.stringify(searchData),
+                                          type: "POST",
+                                          contentType: "application/json;charset=utf-8",
+                                          success: function (response) {
+                                              console.log("添加结果返回：",response)
+                                              if(response.code===200){
+                                                  if(response.data.length===0){
+                                                      document.getElementById("recordTab").innerText="";
+                                                  }else {
+                                                      document.getElementById("recordTab").innerText="";
+                                                      let str = "";
+                                                      for(let i=0;i<response.data.length;i++){
+                                                          str = "<tr>"
+                                                              +"<td>" + (i+1) + "</td>"
+                                                              +"<td>" + response.data[i].studentId + "</td>"
+                                                              +"<td>" + response.data[i].studentName+ "</td>"
+                                                              +"<td>" + response.data[i].professionName+ "</td>"
+                                                              +"<td>" + (response.data[i].className==null?"":response.data[i].className) + "</td>"
+                                                              +"<td>" + response.data[i].averageScore + "</td>"
+                                                              +"<td>" + response.data[i].allAddScore+ "</td>"
+                                                              +"<td>" + response.data[i].allReduceScore+ "</td>"
+                                                              +"<td>" + response.data[i].overallResult+ "</td>"
+                                                              +"</tr>";
+                                                          $("#recordTab").append(str);
+                                                      }
+                                                  }
+                                                  document.getElementById("sendTotal").style.display="block";
+                                              }else {
+                                                  alert(response.message)
+                                              }
+                                          }
+                                      });
+                                  }
+                      }
+                  }
+
+              }
           }else if(year==="" || semester===""){
               alert("学年或学期信息不完整")
           }
 
+      }
+
+
+
+      function send() {
+          if (confirm("确定该学年学期所有专业的综测成绩吗？")) {
+              const professionName=document.getElementById("professionName").value;
+              const year=document.getElementById("year").value;
+              const semester=document.getElementById("semester").value;
+
+              const searchData={}
+
+              if(professionName!=="" && year!=="" && semester!=="") {
+                  searchData.professionName = professionName;
+                  searchData.year = year;
+                  searchData.semester = semester;
+              }else if(professionName==="" && year!=="" && semester!=="") {
+                  searchData.year = year;
+                  searchData.semester = semester;
+              }
+
+              if(document.cookie.length!==0) {
+                  // 按照分隔符截取后转换获得对象
+                  const msg = document.cookie.split("; ");
+                  for (let i = 0; i < msg.length; i++) {
+                      const info = msg[i].split("=")[0];
+                      if (info === "loginUser") {
+                          const obj = JSON.parse(msg[i].split("=")[1]);
+                          searchData.userId=obj.id;
+                          $.ajax({
+                              url: "/comprehensiveTest/sendTotalScore",
+                              data: JSON.stringify(searchData),
+                              type: "POST",
+                              contentType: "application/json;charset=utf-8",
+                              success: function (response) {
+                                  console.log("发布结果返回：",response)
+                                  if(response.code===200 && response.data===true){
+                                      alert("发布成功")
+                                  }else {
+                                      alert(response.message)
+                                  }
+                              }
+                          });
+                      }
+                  }
+              }
+
+
+
+          }
       }
       
       
@@ -121,8 +204,8 @@
             <input type="text" id="semester"  placeholder="请输入学期" autocomplete="off" class="layui-input">
             <button class="layui-btn"  onclick="search()">计算</button>
         </div>
-      <xblock>
-        <button class="layui-btn" onclick="x_admin_show('添加专业','./profession-add.html',600,400)">发布</button>
+      <xblock  id="sendTotal" style="display: none">
+        <button class="layui-btn" onclick="send()">发布</button>
 <!--        <span class="x-right" style="line-height:40px">共有数据：88 条</span>-->
       </xblock>
       <table class="layui-table">

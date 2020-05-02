@@ -7,6 +7,7 @@ import com.example.project.studentsystem.dto.ComprehensiveTestResp;
 import com.example.project.studentsystem.entry.*;
 import com.example.project.studentsystem.mapper.*;
 import com.google.common.collect.Lists;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,8 +55,15 @@ public class ComprehensiveTestService {
         QueryWrapper<Counselor> counselorQueryWrapper = new QueryWrapper<>();
         counselorQueryWrapper.eq("user_id",Long.valueOf(resp.getUserId()));
         List<Counselor> counselors = counselorMapper.selectList(counselorQueryWrapper);
-        return this.calculateTheTotalScoreByCounselorId(counselors.get(0).getId(),resp.getYear(),resp.getSemester())
-                .stream().sorted(Comparator.comparing(ComprehensiveTestResp::getOverallResult).reversed()).collect(Collectors.toList());
+        if(resp.getProfessionName()==null){
+            return this.calculateTheTotalScoreByCounselorId(counselors.get(0).getId(),resp.getYear(),resp.getSemester())
+                    .stream().sorted(Comparator.comparing(ComprehensiveTestResp::getOverallResult).reversed()).collect(Collectors.toList());
+        }else {
+            return this.calculateTheTotalScoreByCounselorId(counselors.get(0).getId(),resp.getYear(),resp.getSemester())
+                    .stream()
+                    .filter(data->data.getProfessionName().equals(resp.getProfessionName()))
+                    .sorted(Comparator.comparing(ComprehensiveTestResp::getOverallResult).reversed()).collect(Collectors.toList());
+        }
     }
 
 
@@ -136,4 +144,36 @@ public class ComprehensiveTestService {
     }
 
 
+
+    public boolean sendTotalScore(ComprehensiveTestResp resp){
+        boolean temp=false;
+        List<ComprehensiveTestResp> resultList = this.getTotalScoreByCounselorUserId(resp);
+        if(CollectionUtil.isNotEmpty(resultList)){
+            for (int i=0;i<resultList.size();i++){
+                //先判断该学生在当前学年当前学期是否已经有数据了，有数据则更新，无数据才进行添加
+                QueryWrapper<ComprehensiveTest> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("student_id",Long.valueOf(resultList.get(i).getStudentId()))
+                        .eq("year",resultList.get(i).getYear())
+                        .eq("semester",resultList.get(i).getSemester());
+                List<ComprehensiveTest> comprehensiveTests = comprehensiveTestMapper.selectList(queryWrapper);
+                ComprehensiveTest comprehensiveTest = new ComprehensiveTest();
+                comprehensiveTest.setStudentId(Long.valueOf(resultList.get(i).getStudentId()));
+                comprehensiveTest.setOverallResult(resultList.get(i).getOverallResult());
+                comprehensiveTest.setAverageScore(resultList.get(i).getAverageScore());
+                comprehensiveTest.setAllAddScore(resultList.get(i).getAllAddScore());
+                comprehensiveTest.setAllReduceScore(resultList.get(i).getAllReduceScore());
+                comprehensiveTest.setYear(resultList.get(i).getYear());
+                comprehensiveTest.setSemester(resultList.get(i).getSemester());
+                comprehensiveTest.setRanking(i+1);
+
+                if(CollectionUtil.isNotEmpty(comprehensiveTests)){
+                    //有数据，更新
+                    comprehensiveTest.setId(comprehensiveTests.get(0).getId());
+                }
+                temp= iComprehensiveTestService.saveOrUpdate(comprehensiveTest);
+
+            }
+        }
+        return temp;
+    }
 }
