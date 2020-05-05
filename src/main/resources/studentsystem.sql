@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50725
 File Encoding         : 65001
 
-Date: 2020-05-02 19:57:23
+Date: 2020-05-05 12:04:14
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -3056,7 +3056,7 @@ CREATE TABLE `student` (
 INSERT INTO `student` VALUES ('1254046663488663554', '1254046663438331906', '1', '2015', '1253978896336973825', '信息管理与信息系统2班', '开发', '党员', '2020-04-29 00:00:00', '汉族', '123456789', '游泳', '广东', '2414111', '22222', '11222', '小李', '123555');
 INSERT INTO `student` VALUES ('1254056078354788353', '1254056078296068098', '1', '2016', '1253979323136765953', null, null, null, '2020-04-29 17:55:52', null, null, null, null, null, null, null, '小吴', null);
 INSERT INTO `student` VALUES ('1255438094837010433', '1255438094774095873', '1', '2015', '1253978896336973825', null, null, null, null, null, null, null, null, null, null, null, '邓执', null);
-INSERT INTO `student` VALUES ('1255520734579535874', '1255520734462095361', '1', '2016', null, null, null, null, null, null, null, null, null, null, null, null, '小郑', null);
+INSERT INTO `student` VALUES ('1255520734579535874', '1255520734462095361', '1', '2016', '1253978896336973825', null, null, null, null, null, null, null, null, null, null, null, '小郑', null);
 
 -- ----------------------------
 -- Table structure for student_transcript
