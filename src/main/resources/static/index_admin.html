@@ -17,7 +17,46 @@
     <script>
 
         function importCourse() {
-            alert("导入课程")
+            $("#file").click();
+            $('#file').change(function (e) {
+                var fileName = e.target.files[0];//js 获取文件对象
+                if (fileName !== undefined) {
+                    var file_typename = fileName.name.substring(fileName.name.lastIndexOf('.'));
+                    if (file_typename === '.xlsx' || file_typename === '.xls') {
+                        $("#filename").val(fileName.name);
+                        UpladFile(fileName);
+                    } else {
+                        alert("请选择正确的文件类型！")
+                    }
+                } else {
+                    alert("请选择正确的文件！")
+                }
+            })
+        }
+
+
+        function UpladFile(fileObj) {
+            var form = new FormData(); // FormData 对象
+            form.append("file", fileObj); // 文件对象
+            $.ajax({
+                url: '/course/importByExcel',                      //url地址
+                type: 'POST',                 //上传方式
+                data: form,                   // 上传formdata封装的数据
+                dataType: 'JSON',
+                cache: false,                  // 不缓存
+                processData: false,        // jQuery不要去处理发送的数据
+                contentType: false,         // jQuery不要去设置Content-Type请求头
+                success:function (data) {
+                    if(data.code===200){
+                        alert("导入课程成功")
+                    }else {
+                        alert(data.message)
+                    }
+                },
+                error:function (data) {           //失败回调
+                    console.log(data);
+                }
+            });
         }
 
     </script>
@@ -35,12 +74,14 @@
             <li class="layui-nav-item">
                 <a href="javascript:;" >增加</a>
                 <dl class="layui-nav-child"> <!-- 二级菜单 -->
-                    <dd><a onclick="x_admin_show('添加辅导员','./counselor-add.html',600,600)"><i class="iconfont">&#xe6a2;</i>辅导员</a></dd>
-                    <dd><a onclick="x_admin_show('添加学生','./student-add.html',600,600)"><i class="iconfont">&#xe6a8;</i>学生</a></dd>
-                    <dd><a onclick="importCourse()"><i class="iconfont">&#xe6b8;</i>课程</a></dd>
+                    <dd style="cursor: pointer; "> <a onclick="x_admin_show('添加辅导员','./counselor-add.html',600,600)"><i class="iconfont">&#xe6a2;</i>辅导员</a></dd>
+                    <dd style="cursor: pointer; "><a onclick="x_admin_show('添加学生','./student-add.html',600,600)"><i class="iconfont">&#xe6a8;</i>学生</a></dd>
+                    <dd style="cursor: pointer; "><a onclick="importCourse()"><i class="iconfont">&#xe6b8;</i>课程</a></dd>
+                    <input type="file" id="file" name="myfile" style="display: none" />
                 </dl>
             </li>
         </ul>
+        <input type="text" id="filename" style="display:none !important;"></span>
         <ul class="layui-nav right" lay-filter="">
           <li class="layui-nav-item">
             <a href="javascript:;">admin</a>
@@ -96,6 +137,12 @@
                         <a _href="./studentprofessionlist.html">
                             <i class="iconfont">&#xe6a7;</i>
                             <cite>学生专业列表</cite>
+                        </a>
+                    </li >
+                    <li>
+                        <a _href="./course_list.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>课程列表</cite>
                         </a>
                     </li >
                 </ul>

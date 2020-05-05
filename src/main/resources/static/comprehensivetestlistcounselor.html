@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>高校学生综合测评系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <script>
+      
+      function search() {
+          const professionName=document.getElementById("professionName").value;
+          const year=document.getElementById("year").value;
+          const semester=document.getElementById("semester").value;
+
+          const searchData={}
+
+          if(professionName!=="" && year!=="" && semester!==""){
+              searchData.professionName=professionName;
+              searchData.year=year;
+              searchData.semester=semester;
+
+              if (confirm("确定计算此专业该学年学期的综测成绩吗？")) {
+                  if(document.cookie.length!==0) {
+                      // 按照分隔符截取后转换获得对象
+                      const msg = document.cookie.split("; ");
+                      for (let i = 0; i < msg.length; i++) {
+                          const info = msg[i].split("=")[0];
+                          if (info === "loginUser") {
+                              const obj = JSON.parse(msg[i].split("=")[1]);
+                              searchData.userId=obj.id;
+                              $.ajax({
+                                  url: "/comprehensiveTest/getTotalScoreByCounselorUserId",
+                                  data: JSON.stringify(searchData),
+                                  type: "POST",
+                                  contentType: "application/json;charset=utf-8",
+                                  success: function (response) {
+                                      console.log("添加结果返回：",response)
+                                      if(response.code===200){
+                                          if(response.data.length===0){
+                                              document.getElementById("recordTab").innerText="";
+                                          }else {
+                                              document.getElementById("recordTab").innerText="";
+                                              let str = "";
+                                              for(let i=0;i<response.data.length;i++){
+                                                  str = "<tr>"
+                                                      +"<td>" + (i+1) + "</td>"
+                                                      +"<td>" + response.data[i].studentId + "</td>"
+                                                      +"<td>" + response.data[i].studentName+ "</td>"
+                                                      +"<td>" + response.data[i].professionName+ "</td>"
+                                                      +"<td>" + (response.data[i].className==null?"":response.data[i].className) + "</td>"
+                                                      +"<td>" + response.data[i].averageScore + "</td>"
+                                                      +"<td>" + response.data[i].allAddScore+ "</td>"
+                                                      +"<td>" + response.data[i].allReduceScore+ "</td>"
+                                                      +"<td>" + response.data[i].overallResult+ "</td>"
+                                                      +"</tr>";
+                                                  $("#recordTab").append(str);
+                                              }
+                                          }
+                                          document.getElementById("sendTotal").style.display="block";
+                                      }else {
+                                          alert(response.message)
+                                      }
+                                  }
+                              });
+                          }
+                      }
+                  }
+
+              }
+
+
+          }else if(professionName==="" && year!=="" && semester!==""){
+              searchData.year=year;
+              searchData.semester=semester;
+
+              if (confirm("确定该学年学期所有专业的综测成绩吗？")) {
+
+                  if(document.cookie.length!==0) {
+                              // 按照分隔符截取后转换获得对象
+                              const msg = document.cookie.split("; ");
+                              for (let i = 0; i < msg.length; i++) {
+                                  const info = msg[i].split("=")[0];
+                                  if (info === "loginUser") {
+                                      const obj = JSON.parse(msg[i].split("=")[1]);
+                                      searchData.userId=obj.id;
+                                      $.ajax({
+                                          url: "/comprehensiveTest/getTotalScoreByCounselorUserId",
+                                          data: JSON.stringify(searchData),
+                                          type: "POST",
+                                          contentType: "application/json;charset=utf-8",
+                                          success: function (response) {
+                                              console.log("添加结果返回：",response)
+                                              if(response.code===200){
+                                                  if(response.data.length===0){
+                                                      document.getElementById("recordTab").innerText="";
+                                                  }else {
+                                                      document.getElementById("recordTab").innerText="";
+                                                      let str = "";
+                                                      for(let i=0;i<response.data.length;i++){
+                                                          str = "<tr>"
+                                                              +"<td>" + (i+1) + "</td>"
+                                                              +"<td>" + response.data[i].studentId + "</td>"
+                                                              +"<td>" + response.data[i].studentName+ "</td>"
+                                                              +"<td>" + response.data[i].professionName+ "</td>"
+                                                              +"<td>" + (response.data[i].className==null?"":response.data[i].className) + "</td>"
+                                                              +"<td>" + response.data[i].averageScore + "</td>"
+                                                              +"<td>" + response.data[i].allAddScore+ "</td>"
+                                                              +"<td>" + response.data[i].allReduceScore+ "</td>"
+                                                              +"<td>" + response.data[i].overallResult+ "</td>"
+                                                              +"</tr>";
+                                                          $("#recordTab").append(str);
+                                                      }
+                                                  }
+                                                  document.getElementById("sendTotal").style.display="block";
+                                              }else {
+                                                  alert(response.message)
+                                              }
+                                          }
+                                      });
+                                  }
+                      }
+                  }
+
+              }
+          }else if(year==="" || semester===""){
+              alert("学年或学期信息不完整")
+          }
+
+      }
+
+
+
+      function send() {
+          if (confirm("确定该学年学期所有专业的综测成绩吗？")) {
+              const professionName=document.getElementById("professionName").value;
+              const year=document.getElementById("year").value;
+              const semester=document.getElementById("semester").value;
+
+              const searchData={}
+
+              if(professionName!=="" && year!=="" && semester!=="") {
+                  searchData.professionName = professionName;
+                  searchData.year = year;
+                  searchData.semester = semester;
+              }else if(professionName==="" && year!=="" && semester!=="") {
+                  searchData.year = year;
+                  searchData.semester = semester;
+              }
+
+              if(document.cookie.length!==0) {
+                  // 按照分隔符截取后转换获得对象
+                  const msg = document.cookie.split("; ");
+                  for (let i = 0; i < msg.length; i++) {
+                      const info = msg[i].split("=")[0];
+                      if (info === "loginUser") {
+                          const obj = JSON.parse(msg[i].split("=")[1]);
+                          searchData.userId=obj.id;
+                          $.ajax({
+                              url: "/comprehensiveTest/sendTotalScore",
+                              data: JSON.stringify(searchData),
+                              type: "POST",
+                              contentType: "application/json;charset=utf-8",
+                              success: function (response) {
+                                  console.log("发布结果返回：",response)
+                                  if(response.code===200 && response.data===true){
+                                      alert("发布成功")
+                                  }else {
+                                      alert(response.message)
+                                  }
+                              }
+                          });
+                      }
+                  }
+              }
+
+
+
+          }
+      }
+      
+      
+  </script>
+  
+  <body>
+
+    <div class="x-body">
+        <div class="layui-row layui-form  x-so">
+            <input type="text" id="professionName"  placeholder="请输入专业" autocomplete="off" class="layui-input">
+            <input type="text" id="year"  placeholder="请输入学年年份" autocomplete="off" class="layui-input">
+            <input type="text" id="semester"  placeholder="请输入学期" autocomplete="off" class="layui-input">
+            <button class="layui-btn"  onclick="search()">计算</button>
+        </div>
+      <xblock  id="sendTotal" style="display: none">
+        <button class="layui-btn" onclick="send()">发布</button>
+<!--        <span class="x-right" style="line-height:40px">共有数据：88 条</span>-->
+      </xblock>
+      <table class="layui-table">
+        <thead>
+          <tr>
+              <th>名次</th>
+              <th>学号</th>
+              <th>姓名</th>
+              <th>专业</th>
+              <th>班级</th>
+              <th>专业加权平均分</th>
+              <th>总加分</th>
+              <th>总扣分</th>
+              <th>综测成绩</th>
+          </tr>
+        </thead>
+        <tbody id="recordTab">
+
+        </tbody>
+      </table>
+<!--      <div class="page">-->
+<!--        <div>-->
+<!--          <a class="prev" href="">&lt;&lt;</a>-->
+<!--          <a class="num" href="">1</a>-->
+<!--          <span class="current">2</span>-->
+<!--          <a class="num" href="">3</a>-->
+<!--          <a class="num" href="">489</a>-->
+<!--          <a class="next" href="">&gt;&gt;</a>-->
+<!--        </div>-->
+<!--      </div>-->
+
+    </div>
+
+  </body>
+
+</html>

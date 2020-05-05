@@ -45,10 +45,18 @@
             type: "POST",
             contentType: "application/json;charset=utf-8",
             success: function (response) {
-
+                console.log("登录信息:",response)
                 if (response.code===200){
-                    location.href='index_admin.html';
-                    // document.cookie = "loginUser=" + JSON.stringify(response.message);
+                    if(response.data.userType===1){
+                        location.href='index_admin.html';
+                    }else if(response.data.userType===2){
+                        document.cookie = "loginUser=" + JSON.stringify(response.data);
+                        location.href='index_counselor.html';
+                    }else {
+                        document.cookie = "loginUser=" + JSON.stringify(response.data);
+                        location.href='index_student.html';
+                    }
+
                 }else {
                     alert(response.message)
                 }

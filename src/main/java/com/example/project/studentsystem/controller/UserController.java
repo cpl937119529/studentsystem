@@ -29,12 +29,12 @@ public class UserController {
     @PostMapping("/login")
     public Result<Object> userLogin(@RequestBody LoginReq req){
 
-        int userType = userService.login(req.getUserName(), req.getPassWord());
-        if(userType==-1){
+        LoginReq user = userService.login(req.getUserName(), req.getPassWord());
+        if(user.getId()==null){
             return Results.newFailedResult(ErrorCodeEnum.USERNAME_POSSWORD_ERROE);
 
         }else {
-            return Results.newSuccessResult(userType);
+            return Results.newSuccessResult(user);
         }
     }
 
@@ -75,6 +75,17 @@ public class UserController {
         user.setPassWord(userResp.getPassWord());
         user.setUserType(userResp.getUserType());
         return Results.newSuccessResult(userService.assignAccount(user));
+    }
+
+
+    /**
+     * 根据条件查找
+     * @param userResp
+     * @return
+     */
+    @PostMapping("/findByCondition")
+    public Result<Object> findByCondition(@RequestBody UserResp userResp){
+        return Results.newSuccessResult(userService.findByCondition(userResp));
     }
 
 }

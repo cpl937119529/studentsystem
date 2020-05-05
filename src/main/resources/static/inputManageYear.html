@@ -33,13 +33,13 @@
                          const obj = JSON.parse(msg[i].split("=")[1]);
 
                           const startYear =document.getElementById("startYear").value;
-                          const endYear=document.getElementById("endYear").value;
+                          // const endYear=document.getElementById("endYear").value;
 
-                          if(startYear!=="" || endYear!==""){
+                          if(startYear!==""){
 
                               const info={}
                               info.startYear=startYear
-                              info.endYear=endYear
+                              // info.endYear=endYear
                               info.counselorId=obj.counselorId
                               info.professionId=obj.professionId
 
@@ -81,7 +81,7 @@
           <div class="layui-form-item">
               <div class="layui-form-item">
                   <label class="layui-form-label">
-                      开始年份：
+                      管理年级：
                   </label>
                   <div class="layui-input-inline">
                       <input class="layui-input" placeholder="开始年份" name="startYear" id="startYear">
@@ -90,16 +90,16 @@
                   </div>
 
               </div>
-              <div class="layui-form-item">
-                  <label  class="layui-form-label">
-                      结束年份：
-                  </label>
-                  <div class="layui-input-inline">
-                      <input class="layui-input" placeholder="结束年份" name="endYear" id="endYear">
-                      <!--                  <input type="password" id="L_repass" name="repass" required="" lay-verify="repass"-->
-                      <!--                  autocomplete="off" class="layui-input">-->
-                  </div>
-              </div>
+<!--              <div class="layui-form-item">-->
+<!--                  <label  class="layui-form-label">-->
+<!--                      结束年份：-->
+<!--                  </label>-->
+<!--                  <div class="layui-input-inline">-->
+<!--                      <input class="layui-input" placeholder="结束年份" name="endYear" id="endYear">-->
+<!--                      &lt;!&ndash;                  <input type="password" id="L_repass" name="repass" required="" lay-verify="repass"&ndash;&gt;-->
+<!--                      &lt;!&ndash;                  autocomplete="off" class="layui-input">&ndash;&gt;-->
+<!--                  </div>-->
+<!--              </div>-->
 
           </div>
 

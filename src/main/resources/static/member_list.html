@@ -31,24 +31,23 @@
           if(response.code===200){
 
             if(response.data.length===0){
-              document.getElementById("recordTab").innerText="";
-              $("#recordTab").append("暂无数据");
-            }else {
-              let str = "";
-              for(let i=0;i<response.data.length;i++){
-                str = "<tr>"
-                        +"<td>" + response.data[i].id + "</td>"
-                        +"<td>" + response.data[i].userName + "</td>"
-                        +"<td>" + response.data[i].passWord+ "</td>"
-                        +"<td>" + response.data[i].name+ "</td>"
-                        +"<td>" + response.data[i].identity+"</td> "
-                        // +"<td>"+
-                        //     "<button  onclick='assignAccount("+ JSON.stringify(response.data[i])+",2)'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配给辅导员</span></button>" +
-                        //     "<button  onclick='assignAccount("+ JSON.stringify(response.data[i])+",3)'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配给学生</span></button>" +
-                        // " </td>"
-                        +"</tr>";
-                $("#recordTab").append(str);
-              }
+                document.getElementById("recordTab").innerText="";
+              }else {
+                let str = "";
+                for(let i=0;i<response.data.length;i++){
+                  str = "<tr>"
+                          +"<td>" + response.data[i].id + "</td>"
+                          +"<td>" + response.data[i].userName + "</td>"
+                          +"<td>" + response.data[i].passWord+ "</td>"
+                          +"<td>" + response.data[i].name+ "</td>"
+                          +"<td>" + (response.data[i].userType===2?"辅导员":"学生")+"</td> "
+                          // +"<td>"+
+                          //     "<button  onclick='assignAccount("+ JSON.stringify(response.data[i])+",2)'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配给辅导员</span></button>" +
+                          //     "<button  onclick='assignAccount("+ JSON.stringify(response.data[i])+",3)'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配给学生</span></button>" +
+                          // " </td>"
+                          +"</tr>";
+                  $("#recordTab").append(str);
+                }
             }
           }else {
             alert(response.message)
@@ -81,19 +80,78 @@
 
     }
 
+    function search() {
+      const userName = document.getElementById("userName").value;
+      const name = document.getElementById("name").value;
+      const userType = document.getElementById("userType").value;
+
+      const searchData={}
+      if(userType!=="ALL"){
+        searchData.userType=userType==="辅导员"?2:3
+      }
+
+      if(userName!==""){
+        searchData.userName=userName
+      }
+
+      if(name!==""){
+        searchData.name=name
+      }
+
+      $.ajax({
+        url: "/user/findByCondition",
+        data: JSON.stringify(searchData),
+        type: "POST",
+        contentType: "application/json;charset=utf-8",
+        success: function (response) {
+          console.log("添加结果返回：",response)
+          if (response.code===200){
+            if(response.data.length===0){
+              document.getElementById("recordTab").innerText="";
+            }else {
+              let str = "";
+              document.getElementById("recordTab").innerText="";
+              for(let i=0;i<response.data.length;i++){
+                str = "<tr>"
+                        +"<td>" + response.data[i].id + "</td>"
+                        +"<td>" + response.data[i].userName + "</td>"
+                        +"<td>" + response.data[i].passWord+ "</td>"
+                        +"<td>" + response.data[i].name+ "</td>"
+                        +"<td>" + (response.data[i].userType===2?"辅导员":"学生")+"</td> "
+                        // +"<td>"+
+                        //     "<button  onclick='assignAccount("+ JSON.stringify(response.data[i])+",2)'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配给辅导员</span></button>" +
+                        //     "<button  onclick='assignAccount("+ JSON.stringify(response.data[i])+",3)'><span class='layui-btn layui-btn-normal layui-btn-mini'>分配给学生</span></button>" +
+                        // " </td>"
+                        +"</tr>";
+                $("#recordTab").append(str);
+              }
+            }
+
+          }else {
+            alert(response.message)
+          }
+        }
+      });
+
+    }
+
   </script>
   
   <body onload="getAll()">
 
     <div class="x-body">
-<!--      <div class="layui-row">-->
-<!--        <form class="layui-form layui-col-md12 x-so">-->
-<!--          <input class="layui-input" placeholder="开始日" name="start" id="start">-->
-<!--          <input class="layui-input" placeholder="截止日" name="end" id="end">-->
-<!--          <input type="text" name="username"  placeholder="请输入用户名" autocomplete="off" class="layui-input">-->
-<!--          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>-->
-<!--        </form>-->
-<!--      </div>-->
+      <div class="layui-row layui-form  x-so">
+        <input type="text" id="userName"  placeholder="请输入用户名" autocomplete="off" class="layui-input">
+        <input type="text" id="name"  placeholder="请输入姓名" autocomplete="off" class="layui-input">
+        <div class="layui-input-inline">
+          <select id="userType">
+            <option>ALL</option>
+            <option>辅导员</option>
+            <option>学生</option>
+          </select>
+        </div>
+        <button class="layui-btn"  onclick="search()"><i class="layui-icon">&#xe615;</i></button>
+      </div>
       <xblock>
 <!--        <button class="layui-btn" onclick="x_admin_show('添加用户','./member-add.html',600,400)"><i class="layui-icon"></i>添加</button>-->
 <!--        <span class="x-right" style="line-height:40px">共有数据：88 条</span>-->

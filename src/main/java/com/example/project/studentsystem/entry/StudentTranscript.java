@@ -17,7 +17,7 @@ public class StudentTranscript {
 
     private Integer score;
 
-    private Integer credit;
+    private Double credit;
 
     private Integer year;
 

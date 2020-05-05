@@ -52,19 +52,66 @@
       });
     }
 
+
+    function search() {
+      const professionName = document.getElementById("professionName").value;
+      const counselorName = document.getElementById("counselorName").value;
+
+      const searchData={}
+      if(professionName!==""){
+        searchData.professionName=professionName
+      }
+
+      if(counselorName!==""){
+        searchData.counselorName=counselorName
+      }
+
+
+      $.ajax({
+        url: "/counselorProfessionRel/searchByCondition",
+        data: JSON.stringify(searchData),
+        type: "POST",
+        contentType: "application/json;charset=utf-8",
+        success: function (response) {
+          console.log("添加结果返回：",response)
+          if (response.code===200){
+            if(response.data.length===0){
+              document.getElementById("recordTab").innerText="";
+
+            }else {
+              document.getElementById("recordTab").innerText="";
+              let str = "";
+              for(let i=0;i<response.data.length;i++){
+                str = "<tr>"
+                        // +"<td>" + response.data[i].id + "</td>"
+                        +"<td>" + response.data[i].professionName + "</td>"
+                        +"<td>" + response.data[i].counselorName+ "</td>"
+                        +"<td>" + response.data[i].startYear + "</td>"
+                        +"<td>" + response.data[i].endYear+ "</td>"
+                        +"</tr>";
+                $("#recordTab").append(str);
+              }
+            }
+          }else {
+            alert(response.message)
+          }
+        }
+      });
+
+
+
+    }
+
   </script>
   
   <body onload="getAll()">
 
     <div class="x-body">
-<!--      <div class="layui-row">-->
-<!--        <form class="layui-form layui-col-md12 x-so">-->
-<!--          <input class="layui-input" placeholder="开始日" name="start" id="start">-->
-<!--          <input class="layui-input" placeholder="截止日" name="end" id="end">-->
-<!--          <input type="text" name="username"  placeholder="请输入用户名" autocomplete="off" class="layui-input">-->
-<!--          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>-->
-<!--        </form>-->
-<!--      </div>-->
+      <div class="layui-row layui-form  x-so">
+        <input type="text" id="professionName"  placeholder="请输入专业名称" autocomplete="off" class="layui-input">
+        <input type="text" id="counselorName"  placeholder="请输入辅导员姓名" autocomplete="off" class="layui-input">
+        <button class="layui-btn"  onclick="search()"><i class="layui-icon">&#xe615;</i></button>
+      </div>
 
       <table class="layui-table">
         <thead>

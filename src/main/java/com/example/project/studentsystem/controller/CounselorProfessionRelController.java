@@ -47,4 +47,14 @@ public class CounselorProfessionRelController {
         return Results.newSuccessResult(service.getAll());
     }
 
+
+    /**
+     * 根据专业名或辅导员名称进行搜索
+     * @return
+     */
+    @PostMapping("/searchByCondition")
+    public Result<Object> searchByCondition(@RequestBody CounselorProfessionRelResp resp){
+        return Results.newSuccessResult(service.searchByCondition(resp));
+    }
+
 }

@@ -3,6 +3,7 @@ package com.example.project.studentsystem.entry;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -24,14 +25,14 @@ public class Student {
 
     private Long professionId;
 
-    private Long classId;
+    private String className;
 
     private String professionDirection;
 
     private String politicalStatus;
 
     @JsonFormat(locale = "zh", timezone = "GMT+8", pattern = "yyyy-MM-dd")
-    private LocalDateTime birth;
+    private LocalDate birth;
 
     private String nation;
 
@@ -47,5 +48,7 @@ public class Student {
     private String email;
 
     private String qq;
+
+    private String phone;
 
 }

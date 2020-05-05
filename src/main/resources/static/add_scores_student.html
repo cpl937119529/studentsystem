@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script>
+        
+        
+        function getInitInfo() {
+
+            if(document.cookie.length!==0) {
+                // 按照分隔符截取后转换获得对象
+                const msg = document.cookie.split("; ");
+                for (let i = 0; i < msg.length; i++) {
+                    const info = msg[i].split("=")[0];
+                    if (info === "loginUser") {
+                        const obj = JSON.parse(msg[i].split("=")[1]);
+                        document.getElementById("counselor").value=obj.name;
+                    }
+                }
+            }
+
+            if(document.cookie.length!==0) {
+                // 按照分隔符截取后转换获得对象
+                const msg = document.cookie.split("; ");
+                for (let i = 0; i < msg.length; i++) {
+                    const info = msg[i].split("=")[0];
+                    if (info === "editStudentInfo") {
+                        const obj = JSON.parse(msg[i].split("=")[1]);
+                        document.getElementById("addScoreObject").value=obj.name;
+                    }
+                }
+            }
+
+        }
+        
+
+        function addScores() {
+            const data={}
+            let counselorUserId="";
+            let studentId="";
+            if(document.cookie.length!==0) {
+                const msg = document.cookie.split("; ");
+                for (let i = 0; i < msg.length; i++) {
+                    const info = msg[i].split("=")[0];
+                    if (info === "loginUser") {
+                        const obj = JSON.parse(msg[i].split("=")[1]);
+                        counselorUserId=obj.id;
+                    }
+                }
+            }
+
+            if(document.cookie.length!==0) {
+                const msg = document.cookie.split("; ");
+                for (let i = 0; i < msg.length; i++) {
+                    const info = msg[i].split("=")[0];
+                    if (info === "editStudentInfo") {
+                        const obj = JSON.parse(msg[i].split("=")[1]);
+                        studentId=obj.id;
+                    }
+                }
+            }
+
+            data.counselorUserId=counselorUserId;
+            data.studentId=studentId;
+            console.log("studentId:",data);
+
+
+            let type = document.getElementById("type").value;
+            let scores = document.getElementById("scores").value;
+            let remark = document.getElementById("remark").value;
+            let year = document.getElementById("year").value;
+            let semester = document.getElementById("semester").value;
+
+
+            if(type==="" || scores==="" || remark==="" || year==="" || semester===""){
+                alert("输入信息不完整")
+            }else {
+                data.type=type;
+                data.score=scores;
+                data.remark=remark;
+                data.year=year;
+                data.semester=semester;
+                $.ajax({
+                    url: "/bonusRecord/addBonusRecord",
+                    data: JSON.stringify(data),
+                    type: "POST",
+                    contentType: "application/json;charset=utf-8",
+                    success: function (response) {
+                        console.log("添加结果返回：",response)
+                        if (response.code===200){
+                            alert("添加成功");
+                            window.top.document.location.reload();
+                        }else {
+                            alert(response.message)
+                        }
+                    }
+                });
+
+            }
+
+        }
+
+    </script>
+  </head>
+  
+  <body onload="getInitInfo()">
+    <div class="x-body">
+
+        <div class="layui-form-item">
+            <label for="addScoreObject" class="layui-form-label">
+                <span class="x-red">*</span>加分对象
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="addScoreObject" name="addScoreObject" required="" lay-verify="addScoreObject"
+                       autocomplete="off" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="type" class="layui-form-label">
+                <span class="x-red">*</span>加分类型
+            </label>
+            <div class="layui-input-inline">
+                <select id="type">
+                    <option value="学科竞赛">学科竞赛</option>
+                    <option value="创新创业">创新创业</option>
+                    <option value="学生干部">学生干部</option>
+                    <option value="志愿活动">志愿活动</option>
+                    <option value="社团活动">社团活动</option>
+                    <option value="其他类型">其他类型</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="scores" class="layui-form-label">
+                <span class="x-red">*</span>加分分数
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="scores" name="scores" required="" lay-verify="scores"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="remark" class="layui-form-label">
+                <span class="x-red">*</span>备注
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="remark" name="remark" required="" lay-verify="remark"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label for="year" class="layui-form-label">
+                <span class="x-red">*</span>年份
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="year" name="department" required="" lay-verify="year"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="semester" class="layui-form-label">
+                <span class="x-red">*</span>学期
+            </label>
+            <div class="layui-input-inline">
+                <select id="semester">
+                    <option value=1>第一学期</option>
+                    <option value=2>第二学期</option>
+                </select>
+<!--                <input type="text" id="semester" name="semester" required="" lay-verify="semester"-->
+<!--                       autocomplete="off" class="layui-input">-->
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label for="counselor" class="layui-form-label">
+                <span class="x-red">*</span>操作人
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="counselor" name="counselor" required="" lay-verify="counselor"
+                       autocomplete="off" class="layui-input" disabled>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <button  class="layui-btn" style="margin-left: 110px" onclick="addScores()">
+                增加
+            </button>
+        </div>
+    </div>
+
+  </body>
+
+</html>

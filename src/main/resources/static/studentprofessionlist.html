@@ -54,19 +54,75 @@
     }
 
 
+    function search() {
+
+      const studentName = document.getElementById("studentName").value;
+      const professionName = document.getElementById("professionName").value;
+      const startYear = document.getElementById("startYear").value;
+
+      const searchData={}
+
+      if(studentName!==""){
+        searchData.name=studentName
+      }
+
+      if(professionName!==""){
+        searchData.professionName=professionName
+      }
+
+      if(startYear!==""){
+        searchData.startYear=startYear
+      }
+
+
+
+      $.ajax({
+        url: "/student/searchByCondition",
+        data: JSON.stringify(searchData),
+        type: "POST",
+        contentType: "application/json;charset=utf-8",
+        success: function (response) {
+          console.log("添加结果返回：",response)
+          if (response.code===200){
+            if(response.data.length===0){
+              document.getElementById("recordTab").innerText="";
+
+            }else {
+              document.getElementById("recordTab").innerText="";
+              let str = "";
+              for(let i=0;i<response.data.length;i++){
+                str = "<tr>"
+
+                        +"<td>" + response.data[i].name + "</td>"
+                        +"<td>" + (response.data[i].professionName!=null?response.data[i].professionName:"未分配")+ "</td>"
+                        +"<td>" + (response.data[i].sex===1?"男":"女") + "</td>"
+                        +"<td>" + response.data[i].startYear+ "</td>"
+                        +"</tr>";
+                $("#recordTab").append(str);
+              }
+            }
+          }else {
+            alert(response.message)
+          }
+        }
+      });
+
+
+    }
+
+
+
   </script>
   
   <body onload="getAll()">
 
     <div class="x-body">
-<!--      <div class="layui-row">-->
-<!--        <form class="layui-form layui-col-md12 x-so">-->
-<!--          <input class="layui-input" placeholder="开始日" name="start" id="start">-->
-<!--          <input class="layui-input" placeholder="截止日" name="end" id="end">-->
-<!--          <input type="text" name="username"  placeholder="请输入用户名" autocomplete="off" class="layui-input">-->
-<!--          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>-->
-<!--        </form>-->
-<!--      </div>-->
+      <div class="layui-row layui-form  x-so">
+        <input type="text" id="studentName"  placeholder="请输入学生姓名" autocomplete="off" class="layui-input">
+        <input type="text" id="professionName"  placeholder="请输入专业名称" autocomplete="off" class="layui-input">
+        <input type="text" id="startYear"  placeholder="请输入入学年份" autocomplete="off" class="layui-input">
+        <button class="layui-btn"  onclick="search()"><i class="layui-icon">&#xe615;</i></button>
+      </div>
 
       <table class="layui-table">
         <thead>
