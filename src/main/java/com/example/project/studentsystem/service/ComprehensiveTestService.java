@@ -115,15 +115,21 @@ public class ComprehensiveTestService {
                                 .eq("year",year)
                                 .eq("semester",semester);
                         List<StudentTranscript> studentTranscripts = studentTranscriptMapper.selectList(studentTranscriptQueryWrapper);
-                        int scores = studentTranscripts.stream().mapToInt(StudentTranscript::getScore).sum();
+                        final double[] scores = {0.0};
+                        //每一科的成绩*学分之和
+                        studentTranscripts.forEach(data->{
+                            double v = data.getScore() * data.getCredit();
+                            scores[0] = scores[0] +v;
+                        });
+                        //总学分
                         double credit = studentTranscripts.stream().mapToDouble(StudentTranscript::getCredit).sum();
 
                         //计算综测成绩
-                        double overallResult = (scores / credit) + addScores - reduceScores;
+                        double overallResult = (scores[0] / credit) + addScores - reduceScores;
 
                         resp.setStudentId(student.getId().toString());
                         resp.setOverallResult(overallResult);
-                        resp.setAverageScore(scores / credit);
+                        resp.setAverageScore(scores[0] / credit);
                         resp.setAllReduceScore((double) reduceScores);
                         resp.setAllAddScore((double) addScores);
                         resp.setYear(year);
