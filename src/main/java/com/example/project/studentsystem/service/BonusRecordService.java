@@ -119,6 +119,10 @@ public class BonusRecordService {
        if(resp.getYear()!=null){
            queryWrapper.eq("year",resp.getYear());
        }
+       if(resp.getSemester()!=null){
+           queryWrapper.eq("semester",resp.getSemester());
+       }
+
         List<BonusRecord> bonusRecords = bonusRecordMapper.selectList(queryWrapper);
         if(CollectionUtil.isNotEmpty(bonusRecords)){
             Counselor counselor = counselorMapper.selectById(bonusRecords.get(0).getCounselorId());
