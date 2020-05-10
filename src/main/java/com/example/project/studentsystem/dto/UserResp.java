@@ -16,4 +16,6 @@ public class UserResp {
     //姓名
     private String name;
 
+    private String newPassWord;
+
 }

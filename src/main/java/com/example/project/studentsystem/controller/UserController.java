@@ -88,4 +88,22 @@ public class UserController {
         return Results.newSuccessResult(userService.findByCondition(userResp));
     }
 
+    /**
+     * 修改密码
+     * @param userResp
+     * @return
+     */
+    @PostMapping("/updatePassword")
+    public Result<Object> updatePassword(@RequestBody UserResp userResp){
+        int i = userService.updatePassword(userResp);
+        if(i==-1){
+            return Results.newFailedResult("密码错误");
+        }
+        if(i==0){
+            return Results.newFailedResult("修改失败");
+        }
+
+        return Results.newSuccessResult("修改成功");
+    }
+
 }

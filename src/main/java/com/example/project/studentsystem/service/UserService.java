@@ -248,4 +248,26 @@ public class UserService {
 
     }
 
+    /**
+     * 修改密码
+     * @param resp
+     * @return
+     */
+    public int updatePassword(UserResp resp){
+        User user = userMapper.selectById(Long.valueOf(resp.getId()));
+
+        if(!resp.getPassWord().equals(user.getPassWord())){
+            //输入的密码与数据库的密码不一致
+            return -1;
+        }
+        user.setPassWord(resp.getNewPassWord());
+        boolean b = iUserService.saveOrUpdate(user);
+        if(b){
+            return 1;
+        }else {
+            return 0;
+        }
+
+    }
+
 }

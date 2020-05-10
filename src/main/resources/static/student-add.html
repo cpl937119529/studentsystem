@@ -25,14 +25,11 @@
             const data={}
             let userName = document.getElementById("username").value;
             let passWord = document.getElementById("password").value;
-            let rePassword = document.getElementById("repass").value;
             let name = document.getElementById("name").value;
             let sex = document.getElementById("sex").value;
             let startYear = document.getElementById("startYear").value;
-            if(userName==="" || passWord==="" || rePassword==="" || name==="" || sex==="" || startYear===""){
+            if(userName==="" || passWord==="" ||  name==="" || sex==="" || startYear===""){
                 alert("输入信息不完整")
-            }else if(passWord !== rePassword) {
-                alert("两次密码输入不一致")
             }else {
                 data.userName=userName;
                 data.passWord=passWord;
@@ -79,17 +76,8 @@
                 <span class="x-red">*</span>密码
             </label>
             <div class="layui-input-inline">
-                <input type="password" id="password" name="password" required="" lay-verify="password"
-                       autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label for="repass" class="layui-form-label">
-                <span class="x-red">*</span>确认密码
-            </label>
-            <div class="layui-input-inline">
-                <input type="password" id="repass" name="repass" required="" lay-verify="repass"
-                       autocomplete="off" class="layui-input">
+                <input type="text" value="123456" id="password" name="password" required="" lay-verify="password"
+                       autocomplete="off" class="layui-input" disabled>
             </div>
         </div>
 
@@ -112,19 +100,33 @@
                     <option value="女">女</option>
                 </select>
             </div>
-<!--            <div class="layui-input-inline">-->
-<!--                <input type="text" id="sex" name="sex" required="" lay-verify="sex"-->
-<!--                       autocomplete="off" class="layui-input">-->
-<!--            </div>-->
+
         </div>
         <div class="layui-form-item">
             <label for="startYear" class="layui-form-label">
-                <span class="x-red">*</span>开始年份
+                <span class="x-red">*</span>入学年份
             </label>
             <div class="layui-input-inline">
-                <input type="text" id="startYear" name="startYear" required="" lay-verify="startYear"
-                       autocomplete="off" class="layui-input">
+                <select id="startYear">
+                    <option value=2010>2010</option>
+                    <option value=2011>2011</option>
+                    <option value=2012>2012</option>
+                    <option value=2013>2013</option>
+                    <option value=2014>2014</option>
+                    <option value=2015>2015</option>
+                    <option value=2016>2016</option>
+                    <option value=2017>2017</option>
+                    <option value=2018>2018</option>
+                    <option value=2019>2019</option>
+                    <option value=2020>2020</option>
+                    <option value=2021>2021</option>
+                    <option value=2022>2022</option>
+                    <option value=2023>2023</option>
+                    <option value=2024>2024</option>
+                    <option value=2025>2025</option>
+                </select>
             </div>
+
         </div>
 
         <div class="layui-form-item">

@@ -113,12 +113,11 @@ public class DeductionRecordService {
     public List<DeductionRecordResp> getListByCondition(DeductionRecordResp resp){
         List<DeductionRecordResp> resultList = Lists.newArrayList();
         QueryWrapper<DeductionRecord> queryWrapper = new QueryWrapper<>();
-        if(resp.getType()!=null){
-            queryWrapper.eq("type",resp.getType());
-        }
-        if(resp.getYear()!=null){
-            queryWrapper.eq("year",resp.getYear());
-        }
+
+        queryWrapper.eq(resp.getSemester()!=null,"semester",resp.getSemester())
+                    .eq(resp.getType()!=null,"type",resp.getType())
+                    .eq(resp.getYear()!=null,"year",resp.getYear());
+
         List<DeductionRecord> bonusRecords = deductionRecordMapper.selectList(queryWrapper);
         if(CollectionUtil.isNotEmpty(bonusRecords)){
             Counselor counselor = counselorMapper.selectById(bonusRecords.get(0).getCounselorId());

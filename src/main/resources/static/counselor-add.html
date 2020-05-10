@@ -25,15 +25,12 @@
             const data={}
             let userName = document.getElementById("username").value;
             let passWord = document.getElementById("password").value;
-            let rePassword = document.getElementById("repass").value;
             let name = document.getElementById("name").value;
             let sex = document.getElementById("sex").value;
             let department = document.getElementById("department").value;
 
-            if(userName==="" || passWord==="" || rePassword==="" || name==="" || sex==="" || department===""){
+            if(userName==="" || passWord==="" ||  name==="" || sex==="" || department===""){
                 alert("输入信息不完整")
-            }else if(passWord !== rePassword) {
-                alert("两次密码输入不一致")
             }else {
                 data.userName=userName;
                 data.passWord=passWord;
@@ -80,19 +77,11 @@
                 <span class="x-red">*</span>密码
             </label>
             <div class="layui-input-inline">
-                <input type="password" id="password" name="password" required="" lay-verify="password"
-                       autocomplete="off" class="layui-input">
+                <input type="text" id="password"  value="123456" name="password" required="" lay-verify="password"
+                       autocomplete="off" class="layui-input" disabled>
             </div>
         </div>
-        <div class="layui-form-item">
-            <label for="repass" class="layui-form-label">
-                <span class="x-red">*</span>确认密码
-            </label>
-            <div class="layui-input-inline">
-                <input type="password" id="repass" name="repass" required="" lay-verify="repass"
-                       autocomplete="off" class="layui-input">
-            </div>
-        </div>
+
         <div class="layui-form-item">
             <label for="name" class="layui-form-label">
                 <span class="x-red">*</span>姓名

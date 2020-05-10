@@ -182,7 +182,7 @@ public class StudentService {
      */
     public List<StudentResp> searchByCondition(StudentResp resp){
         //获取所有学生信息
-        List<StudentResp> studentLists = this.getAllInfo();
+        List<StudentResp> studentLists = this.getStudentListByCounselor(resp.getUserId());
 
         if(resp.getName()!=null && resp.getProfessionName()==null && resp.getStartYear()==null){
             //根据学生姓名查询
@@ -213,6 +213,11 @@ public class StudentService {
             //根据专业,入学年份查询
             return  studentLists.stream()
                     .filter(data-> data.getProfessionName()!=null && data.getProfessionName().equals(resp.getProfessionName()) && data.getStartYear().equals(resp.getStartYear()))
+                    .collect(Collectors.toList());
+        }else if(resp.getName()!=null && resp.getProfessionName()!=null && resp.getStartYear()!=null){
+            //根据姓名,专业,入学年份查询
+            return  studentLists.stream()
+                    .filter(data-> data.getName().equals(resp.getName()) && data.getProfessionName()!=null && data.getProfessionName().equals(resp.getProfessionName()) && data.getStartYear().equals(resp.getStartYear()))
                     .collect(Collectors.toList());
         }else {
             //查询全部
