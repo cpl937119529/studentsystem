@@ -25,7 +25,6 @@
 
       if(document.cookie.length!==0){
         // 按照分隔符截取后转换获得对象
-        console.log(document.cookie)
         const msg = document.cookie.split("; ");
         for(let i=0; i<msg.length; i++){
           const info = msg[i].split("=")[0];
@@ -72,18 +71,14 @@
               }
             });
 
-
             $.ajax({
               url: "/class/getClassByUserId?userId="+obj.id+"",
               type: "GET",
               contentType: "application/json;charset=utf-8",
               success: function (response) {
-                if(response.data.length===0){
-                  $("#studentClassData").append("");
-                }else {
-                  const oSelect = document.getElementById("studentClassData");
-                  for(let i=0;i<response.data.length;i++){
-                    oSelect.add(new Option(response.data[i].className,response.data[i].className));
+                if(response.data.length!==0){
+                  for (let i=0;i<response.data.length;i++){
+                    $("#studentClassData").append("<option value='"+response.data[i].className+"'>"+response.data[i].className+"</option>")
                   }
                 }
               }
@@ -94,18 +89,13 @@
               type: "GET",
               contentType: "application/json;charset=utf-8",
               success: function (response) {
-                if(response.data.length===0){
-                  $("#professionData").append("");
-                }else {
-                  const oSelect = document.getElementById("professionData");
-                  for(let i=0;i<response.data.length;i++){
-                    oSelect.add(new Option(response.data[i].professionName,response.data[i].professionName));
+                if(response.data.length!==0){
+                  for (let i=0;i<response.data.length;i++){
+                    $("#professionData").append("<option value='"+response.data[i].professionName+"'>"+response.data[i].professionName+"</option>")
                   }
                 }
               }
             });
-
-
           }
         }
       }
@@ -245,8 +235,6 @@
             <option value="All">All</option>
           </select>
         </div>
-
-<!--        <input type="text" id="studentClassData"  placeholder="请输入学生班级" autocomplete="off" class="layui-input">-->
 
         <button class="layui-btn"  onclick="search()"><i class="layui-icon">&#xe615;</i></button>
 

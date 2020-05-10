@@ -109,19 +109,18 @@ public class ResumeService {
 
         if(CollectionUtil.isNotEmpty(resumes)){
             //有该学生的简历信息,将简历信息拼接成一个字符串，用来计算与各个职位的相似度
-            //先后顺序为：职位名称、学历、行业类型、职位类型、工作城市、薪资
+            //先后顺序为：职位名称、学历、行业类型、职位类型、薪资
             String remueStr =resumes.get(0).getPositionName()
                     +resumes.get(0).getEducation()
                     +resumes.get(0).getIndustryType()
                     +resumes.get(0).getPositionType()
-                    +resumes.get(0).getWorkCity()
                     +resumes.get(0).getLimitSalary()+"-"
                     +resumes.get(0).getMaxSalary();
 
             Map<Long,Double> simMap = new HashMap<>();
 
             //获取所有的职位信息
-            List<Position> positions = positionMapper.selectList(null);
+            List<Position> positions = positionMapper.selectList(null).stream().filter(data->data.getWorkCity().equals(resumes.get(0).getWorkCity())).collect(Collectors.toList());
             if(CollectionUtil.isNotEmpty(positions)){
                 //有职位信息，拼接职位信息的字符串（与简历信息的顺序一致）
                 positions.forEach(position -> {
@@ -129,7 +128,6 @@ public class ResumeService {
                             +position.getEducation()
                             +position.getIndustryType()
                             +position.getPositionType()
-                            +position.getWorkCity()
                             +position.getLimitSalary()+"-"
                             +position.getMaxSalary();
 
