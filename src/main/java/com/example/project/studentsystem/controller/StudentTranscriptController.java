@@ -10,12 +10,14 @@ import com.example.project.studentsystem.IService.impl.IStudentServiceImpl;
 import com.example.project.studentsystem.IService.impl.IStudentTranscriptServiceImpl;
 import com.example.project.studentsystem.base.Result;
 import com.example.project.studentsystem.base.Results;
+import com.example.project.studentsystem.dto.StudentResp;
 import com.example.project.studentsystem.dto.StudentTranscriptReqForExcel;
 import com.example.project.studentsystem.dto.StudentTranscriptResp;
 import com.example.project.studentsystem.entry.Course;
 import com.example.project.studentsystem.entry.StudentTranscript;
 import com.example.project.studentsystem.mapper.CourseMapper;
 import com.example.project.studentsystem.mapper.StudentTranscriptMapper;
+import com.example.project.studentsystem.service.StudentService;
 import com.example.project.studentsystem.service.StudentTranscriptService;
 import com.example.project.studentsystem.utils.ExcelListener;
 import com.google.common.collect.Lists;
@@ -27,6 +29,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/studentTranscript")
@@ -42,9 +45,12 @@ public class StudentTranscriptController {
     @Autowired
     private StudentTranscriptService studentTranscriptService;
 
+    @Autowired
+    private StudentService studentService;
+
 
     @PostMapping("/importByExcel")
-    public Result<Object> uploadFile(@RequestParam(value = "file", required=true) MultipartFile file){
+    public Result<Object> uploadFile(@RequestParam(value = "file", required=true) MultipartFile file,@RequestParam(value = "userId", required=true) String userId){
         //此处千万不要用InputStream，InputStream会导致无法解析出文件类型
         BufferedInputStream buffer = null;
         try{
@@ -87,6 +93,21 @@ public class StudentTranscriptController {
 
                 studentTranscripts.add(studentTranscript);
             });
+
+
+            List<StudentResp> students = studentService.getStudentListByCounselor(userId);
+            if(CollectionUtil.isNotEmpty(students)){
+                List<String> studentIds = students.stream().map(StudentResp::getId).collect(Collectors.toList());
+                for(int i=0;i<studentTranscripts.size();i++){
+                    if(!studentIds.contains(studentTranscripts.get(i).getStudentId().toString())){
+                        return Results.newFailedResult("导入失败,学号为："+studentTranscripts.get(i).getStudentId()+"的学生不是您管辖的学生");
+                    }
+                }
+
+            }else {
+                return Results.newFailedResult("导入失败,您没有管辖学生");
+            }
+
 
             if(CollectionUtil.isNotEmpty(studentTranscripts)){
                 boolean b = iStudentService.saveOrUpdateBatch(studentTranscripts);

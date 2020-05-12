@@ -41,7 +41,7 @@
                                     let str = "";
                                     for(let i=0;i<response.data.length;i++){
                                         str = "<tr>"
-                                            +"<td>" + response.data[i].id + "</td>"
+                                            +"<td>" + response.data[i].studentId + "</td>"
                                             +"<td>" + response.data[i].studentName + "</td>"
                                             +"<td>" + response.data[i].professionName + "</td>"
                                             +"<td>" + (response.data[i].className==null?"":response.data[i].className) + "</td>"
@@ -147,7 +147,7 @@
                                     document.getElementById("recordTab").innerText="";
                                     for(let i=0;i<response.data.length;i++){
                                         str = "<tr>"
-                                            +"<td>" + response.data[i].id + "</td>"
+                                            +"<td>" + response.data[i].studentId + "</td>"
                                             +"<td>" + response.data[i].studentName + "</td>"
                                             +"<td>" + response.data[i].professionName + "</td>"
                                             +"<td>" + (response.data[i].className==null?"":response.data[i].className) + "</td>"

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>高校学生综合测评系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <script>
+
+    function getAll() {
+
+      $.ajax({
+        url: "/profession/getAll",
+        type: "GET",
+        contentType: "application/json;charset=utf-8",
+        success: function (response) {
+          if(response.data.length!==0){
+            for(let i=0;i<response.data.length;i++){
+              $("#professionName").append("<option value='"+response.data[i].professionName+"'>"+response.data[i].professionName+"</option>")
+            }
+          }
+        }
+      });
+
+      $.ajax({
+        url: "/student/getAllInfo",
+        type: "GET",
+        contentType: "application/json;charset=utf-8",
+        success: function (response) {
+          if(response.code===200){
+            if(response.data.length===0){
+              document.getElementById("recordTab").innerText="";
+            }else {
+              document.getElementById("recordTab").innerText="";
+              let str = "";
+              for(let i=0;i<response.data.length;i++){
+                str = "<tr>"
+                        +"<td>" + response.data[i].name + "</td>"
+                        +"<td>" + (response.data[i].professionName!=null?response.data[i].professionName:"未分配")+ "</td>"
+                        +"<td>" + (response.data[i].sex===1?"男":"女") + "</td>"
+                        +"<td>" + response.data[i].startYear+ "</td>"
+                        +"</tr>";
+                $("#recordTab").append(str);
+              }
+            }
+          }else {
+            alert(response.message)
+          }
+        }
+      });
+
+    }
+
+
+    function search() {
+
+      const studentName = document.getElementById("studentName").value;
+      const professionName = document.getElementById("professionName").value;
+      const startYear = document.getElementById("startYear").value;
+
+      const searchData = {}
+
+      if (studentName !== "") {
+        searchData.name = studentName
+      }
+
+      if (professionName !== "All") {
+        searchData.professionName = professionName
+      }
+
+      if (startYear !== "All") {
+        searchData.startYear = startYear
+      }
+
+
+      if(document.cookie.length!==0) {
+        // 按照分隔符截取后转换获得对象
+        const msg = document.cookie.split("; ");
+        for (let i = 0; i < msg.length; i++) {
+          const info = msg[i].split("=")[0];
+          if (info === "loginUser") {
+            const obj = JSON.parse(msg[i].split("=")[1]);
+            searchData.userId=obj.id;
+            $.ajax({
+              url: "/student/searchByCondition",
+              data: JSON.stringify(searchData),
+              type: "POST",
+              contentType: "application/json;charset=utf-8",
+              success: function (response) {
+                if (response.code===200){
+                  if(response.data.length===0){
+                    document.getElementById("recordTab").innerText="";
+
+                  }else {
+                    document.getElementById("recordTab").innerText="";
+                    let str = "";
+                    for(let i=0;i<response.data.length;i++){
+                      str = "<tr>"
+                              +"<td>" + response.data[i].name + "</td>"
+                              +"<td>" + (response.data[i].professionName!=null?response.data[i].professionName:"未分配")+ "</td>"
+                              +"<td>" + (response.data[i].sex===1?"男":"女") + "</td>"
+                              +"<td>" + response.data[i].startYear+ "</td>"
+                              +"</tr>";
+                      $("#recordTab").append(str);
+                    }
+                  }
+                }else {
+                  alert(response.message)
+                }
+              }
+            });
+
+          }
+        }
+      }
+
+
+
+
+    }
+
+
+
+  </script>
+  
+  <body onload="getAll()">
+
+    <div class="x-body">
+      <div class="layui-row layui-form  x-so">
+
+        <input type="text" id="studentName"  placeholder="请输入学生姓名" autocomplete="off" class="layui-input">
+
+        <div class="layui-input-inline">
+          <select id="professionName">
+            <option value="All">All</option>
+          </select>
+        </div>
+
+        <div class="layui-input-inline">
+          <select id="startYear">
+            <option value="All">All</option>
+            <option value=2010>2010</option>
+            <option value=2011>2011</option>
+            <option value=2012>2012</option>
+            <option value=2013>2013</option>
+            <option value=2014>2014</option>
+            <option value=2015>2015</option>
+            <option value=2016>2016</option>
+            <option value=2017>2017</option>
+            <option value=2018>2018</option>
+            <option value=2019>2019</option>
+            <option value=2020>2020</option>
+            <option value=2021>2021</option>
+            <option value=2022>2022</option>
+            <option value=2023>2023</option>
+            <option value=2024>2024</option>
+            <option value=2025>2025</option>
+          </select>
+        </div>
+        <button class="layui-btn"  onclick="search()"><i class="layui-icon">&#xe615;</i></button>
+      </div>
+
+      <table class="layui-table">
+        <thead>
+          <tr>
+            <th>学生姓名</th>
+            <th>所属专业</th>
+            <th>学生性别</th>
+            <th>入学年份</th>
+          </tr>
+        </thead>
+        <tbody id="recordTab">
+
+        </tbody>
+      </table>
+<!--      <div class="page">-->
+<!--        <div>-->
+<!--          <a class="prev" href="">&lt;&lt;</a>-->
+<!--          <a class="num" href="">1</a>-->
+<!--          <span class="current">2</span>-->
+<!--          <a class="num" href="">3</a>-->
+<!--          <a class="num" href="">489</a>-->
+<!--          <a class="next" href="">&gt;&gt;</a>-->
+<!--        </div>-->
+<!--      </div>-->
+
+    </div>
+
+  </body>
+
+</html>

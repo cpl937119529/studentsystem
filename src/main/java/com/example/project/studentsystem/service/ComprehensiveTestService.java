@@ -129,8 +129,8 @@ public class ComprehensiveTestService {
                         double overallResult =credit!=0.0? (scores[0] / credit) + addScores - reduceScores:0.0;
 
                         resp.setStudentId(student.getId().toString());
-                        resp.setOverallResult(overallResult);
-                        resp.setAverageScore(credit!=0.0?scores[0] / credit:0.0);
+                        resp.setOverallResult(Double.parseDouble(String.format("%.2f", overallResult)));
+                        resp.setAverageScore(credit!=0.0? Double.parseDouble(String.format("%.2f", scores[0] / credit)) :0.0);
                         resp.setAllReduceScore((double) reduceScores);
                         resp.setAllAddScore((double) addScores);
                         resp.setYear(year);

@@ -53,25 +53,38 @@
         function UpladFile(fileObj) {
             var form = new FormData(); // FormData 对象
             form.append("file", fileObj); // 文件对象
-            $.ajax({
-                url: '/studentTranscript/importByExcel',                      //url地址
-                type: 'POST',                 //上传方式
-                data: form,                   // 上传formdata封装的数据
-                dataType: 'JSON',
-                cache: false,                  // 不缓存
-                processData: false,        // jQuery不要去处理发送的数据
-                contentType: false,         // jQuery不要去设置Content-Type请求头
-                success:function (data) {
-                    if(data.code===200){
-                        alert("导入成绩成功")
-                    }else {
-                        alert(data.message)
+            if(document.cookie.length!==0){
+                // 按照分隔符截取后转换获得对象
+                console.log(document.cookie)
+                const msg = document.cookie.split("; ");
+                for(let i=0; i<msg.length; i++){
+                    const info = msg[i].split("=")[0];
+                    if(info==="loginUser"){
+                        const obj = JSON.parse(msg[i].split("=")[1]);
+                        form.append("userId",obj.id);
+                        $.ajax({
+                            url: '/studentTranscript/importByExcel',                      //url地址
+                            type: 'POST',                 //上传方式
+                            data: form,                   // 上传formdata封装的数据
+                            dataType: 'JSON',
+                            cache: false,                  // 不缓存
+                            processData: false,        // jQuery不要去处理发送的数据
+                            contentType: false,         // jQuery不要去设置Content-Type请求头
+                            success:function (data) {
+                                if(data.code===200){
+                                    alert("导入成绩成功")
+                                }else {
+                                    alert(data.message)
+                                }
+                            },
+                            error:function (data) {           //失败回调
+                                console.log(data);
+                            }
+                        });
                     }
-                },
-                error:function (data) {           //失败回调
-                    console.log(data);
                 }
-            });
+            }
+
         }
 
     </script>
