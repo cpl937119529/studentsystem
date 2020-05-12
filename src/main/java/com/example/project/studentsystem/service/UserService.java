@@ -127,7 +127,6 @@ public class UserService {
             student.setUserId(user.getId());
             studentMapper.insert(student);
         }
-
         return user.getId();
     }
 

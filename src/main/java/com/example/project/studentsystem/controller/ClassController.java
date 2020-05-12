@@ -23,7 +23,7 @@ public class ClassController {
     @GetMapping("/getClassByUserId")
     public Result<Object> getClassByUserId(@RequestParam String userId)
     {
-        return Results.newSuccessResult(classService.getClassByUserId(userId));
+        return Results.newSuccessResult(classService.getClassByUserId(userId).stream().distinct());
     }
 
 }

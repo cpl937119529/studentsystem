@@ -57,10 +57,10 @@ public class ComprehensiveTestService {
         counselorQueryWrapper.eq("user_id",Long.valueOf(resp.getUserId()));
         List<Counselor> counselors = counselorMapper.selectList(counselorQueryWrapper);
         if(resp.getProfessionName()==null){
-            return this.calculateTheTotalScoreByCounselorId(counselors.get(0).getId(),resp.getYear(),resp.getSemester())
+            return this.calculateTheTotalScoreByCounselorId(counselors.get(0).getId(),resp.getYear(),resp.getSemester(),resp.getStudyYear())
                     .stream().sorted(Comparator.comparing(ComprehensiveTestResp::getOverallResult).reversed()).collect(Collectors.toList());
         }else {
-            return this.calculateTheTotalScoreByCounselorId(counselors.get(0).getId(),resp.getYear(),resp.getSemester())
+            return this.calculateTheTotalScoreByCounselorId(counselors.get(0).getId(),resp.getYear(),resp.getSemester(),resp.getStudyYear())
                     .stream()
                     .filter(data->data.getProfessionName().equals(resp.getProfessionName()))
                     .sorted(Comparator.comparing(ComprehensiveTestResp::getOverallResult).reversed()).collect(Collectors.toList());
@@ -75,17 +75,18 @@ public class ComprehensiveTestService {
      * @param semester
      * @return
      */
-    private List<ComprehensiveTestResp> calculateTheTotalScoreByCounselorId(Long counselorId,int year,int semester){
+    private List<ComprehensiveTestResp> calculateTheTotalScoreByCounselorId(Long counselorId,int year,int semester,int studyYear){
         List<ComprehensiveTestResp> resultList = Lists.newArrayList();
         //获取该辅导员管理的专业信息
         QueryWrapper<CounselorProfessionRel> counselorProfessionRelQueryWrapper = new QueryWrapper<>();
-        counselorProfessionRelQueryWrapper.eq("counselor_id",counselorId);
+        counselorProfessionRelQueryWrapper.eq("counselor_id",counselorId)
+                                            .eq("start_year",year);
         List<CounselorProfessionRel> counselorProfessionRels = counselorProfessionRelMapper.selectList(counselorProfessionRelQueryWrapper);
         if(CollectionUtil.isNotEmpty(counselorProfessionRels)){
             //该辅导员有管理专业,根据专业id和入学年份获取其管辖的学生信息
             counselorProfessionRels.forEach(counselorProfessionRel -> {
                 QueryWrapper<Student> studentQueryWrapper = new QueryWrapper<>();
-                studentQueryWrapper.eq("start_year",counselorProfessionRel.getStartYear())
+                studentQueryWrapper.eq("start_year",year)
                                     .eq("profession_id",counselorProfessionRel.getProfessionId());
                 List<Student> students = studentMapper.selectList(studentQueryWrapper);
                 if(CollectionUtil.isNotEmpty(students)){
@@ -96,7 +97,7 @@ public class ComprehensiveTestService {
                         //获取该学生在该学年该学期的加分记录，并计算总的加分分数
                         QueryWrapper<BonusRecord> bonusRecordQueryWrapper = new QueryWrapper<>();
                         bonusRecordQueryWrapper.eq("student_id",student.getId())
-                                                .eq("year",year)
+                                                .eq("year",studyYear)
                                                 .eq("semester",semester);
                         List<BonusRecord> bonusRecords = bonusRecordMapper.selectList(bonusRecordQueryWrapper);
                         int addScores = bonusRecords.stream().mapToInt(BonusRecord::getScore).sum();
@@ -125,11 +126,11 @@ public class ComprehensiveTestService {
                         double credit = studentTranscripts.stream().mapToDouble(StudentTranscript::getCredit).sum();
 
                         //计算综测成绩
-                        double overallResult = (scores[0] / credit) + addScores - reduceScores;
+                        double overallResult =credit!=0.0? (scores[0] / credit) + addScores - reduceScores:0.0;
 
                         resp.setStudentId(student.getId().toString());
                         resp.setOverallResult(overallResult);
-                        resp.setAverageScore(scores[0] / credit);
+                        resp.setAverageScore(credit!=0.0?scores[0] / credit:0.0);
                         resp.setAllReduceScore((double) reduceScores);
                         resp.setAllAddScore((double) addScores);
                         resp.setYear(year);
@@ -218,7 +219,7 @@ public class ComprehensiveTestService {
                             comprehensiveTests.forEach(comprehensiveTest -> {
                                 ComprehensiveTestResp resp = new ComprehensiveTestResp();
                                 BeanUtils.copyProperties(comprehensiveTest,resp);
-
+                                resp.setStudyYear(comprehensiveTest.getYear());
                                 resp.setId(comprehensiveTest.getId().toString());
                                 resp.setStudentId(comprehensiveTest.getStudentId().toString());
                                 resp.setProfessionId(rel.getProfessionId().toString());
@@ -242,7 +243,7 @@ public class ComprehensiveTestService {
      * @return
      */
     public List<ComprehensiveTestResp> findByCondition(ComprehensiveTestResp resp){
-        List<ComprehensiveTestResp> resultList = this.getAll(resp.getUserId());
+        List<ComprehensiveTestResp> resultList = this.getAll(resp.getUserId()).stream().filter(data->data.getStudyYear().equals(resp.getStudyYear())).collect(Collectors.toList());
 
         if(resp.getProfessionName()!=null && resp.getYear()==null && resp.getSemester()==null){
             return resultList.stream().filter(data->data.getProfessionName().equals(resp.getProfessionName())).collect(Collectors.toList());

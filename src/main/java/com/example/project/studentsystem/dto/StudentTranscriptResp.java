@@ -33,5 +33,7 @@ public class StudentTranscriptResp {
 
     private String userId;
 
+    private Integer studyYear;
+
 
 }

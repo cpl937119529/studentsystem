@@ -366,4 +366,30 @@ public class StudentService {
         return resp;
     }
 
+    /**
+     * 根据学生id获取学生信息
+     * @param id
+     * @return
+     */
+    public StudentResp getInfoById(String id){
+        StudentResp resp = new StudentResp();
+        Student student = studentMapper.selectById(Long.valueOf(id));
+        BeanUtils.copyProperties(student,resp);
+        resp.setId(student.getId().toString());
+        resp.setProfessionId(student.getProfessionId().toString());
+
+        if(student.getBirth()!=null){
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String localTime = df.format(student.getBirth());
+            resp.setBirth(localTime);
+        }
+
+        if(student.getProfessionId()!=null){
+            resp.setProfessionId(student.getProfessionId().toString());
+            Profession profession = professionMapper.selectById(student.getProfessionId());
+            resp.setProfessionName(profession.getProfessionName());
+        }
+        return resp;
+    }
+
 }

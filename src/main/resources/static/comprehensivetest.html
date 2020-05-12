@@ -88,17 +88,15 @@
         const professionName = document.getElementById("professionName").value;
         const year = document.getElementById("year").value;
         const semester = document.getElementById("semester").value;
+         const studyYear = document.getElementById("studyYear").value;
 
         const searchData={};
         if(professionName!=="All"){
             searchData.professionName=professionName;
         }
-        if(year!==""){
-             searchData.year=year;
-        }
-        if(semester!==""){
-             searchData.semester=semester;
-        }
+         searchData.year=year;
+         searchData.semester=semester;
+         searchData.studyYear=studyYear;
 
          if(document.cookie.length!==0) {
              // 按照分隔符截取后转换获得对象
@@ -166,6 +164,26 @@
 
             <div class="layui-input-inline">
                 <select id="year">
+                    <option value=2010>2010</option>
+                    <option value=2011>2011</option>
+                    <option value=2012>2012</option>
+                    <option value=2013>2013</option>
+                    <option value=2014>2014</option>
+                    <option value=2015>2015</option>
+                    <option value=2016>2016</option>
+                    <option value=2017>2017</option>
+                    <option value=2018>2018</option>
+                    <option value=2019>2019</option>
+                    <option value=2020>2020</option>
+                    <option value=2021>2021</option>
+                    <option value=2022>2022</option>
+                    <option value=2023>2023</option>
+                    <option value=2024>2024</option>
+                    <option value=2025>2025</option>
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select id="studyYear">
                     <option value=2010>2010</option>
                     <option value=2011>2011</option>
                     <option value=2012>2012</option>
