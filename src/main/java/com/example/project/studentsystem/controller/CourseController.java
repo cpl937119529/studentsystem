@@ -13,7 +13,9 @@ import com.example.project.studentsystem.dto.CourseReqForExcel;
 import com.example.project.studentsystem.dto.CourseResp;
 import com.example.project.studentsystem.entry.Course;
 import com.example.project.studentsystem.entry.Profession;
+import com.example.project.studentsystem.mapper.CourseMapper;
 import com.example.project.studentsystem.mapper.ProfessionMapper;
+import com.example.project.studentsystem.mapper.StudentMapper;
 import com.example.project.studentsystem.service.CourseService;
 import com.example.project.studentsystem.utils.ExcelListener;
 import com.google.common.collect.Lists;
@@ -38,6 +40,7 @@ public class CourseController {
 
     @Autowired
     private ProfessionMapper professionMapper;
+
 
     @PostMapping("/importByExcel")
     public Result<Object> uploadFile(@RequestParam(value = "file", required=true) MultipartFile file){
@@ -75,6 +78,7 @@ public class CourseController {
 
 
             if(CollectionUtil.isNotEmpty(courseList)){
+
                 for (int i=0;i<courseList.size();i++){
                     Profession profession = professionMapper.selectById(courseList.get(i).getProfessionId());
                     if(profession==null){

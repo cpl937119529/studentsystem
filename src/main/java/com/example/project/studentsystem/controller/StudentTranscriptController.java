@@ -6,6 +6,7 @@ import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.util.CollectionUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.project.studentsystem.IService.impl.IStudentServiceImpl;
 import com.example.project.studentsystem.IService.impl.IStudentTranscriptServiceImpl;
 import com.example.project.studentsystem.base.Result;
@@ -14,8 +15,10 @@ import com.example.project.studentsystem.dto.StudentResp;
 import com.example.project.studentsystem.dto.StudentTranscriptReqForExcel;
 import com.example.project.studentsystem.dto.StudentTranscriptResp;
 import com.example.project.studentsystem.entry.Course;
+import com.example.project.studentsystem.entry.Student;
 import com.example.project.studentsystem.entry.StudentTranscript;
 import com.example.project.studentsystem.mapper.CourseMapper;
+import com.example.project.studentsystem.mapper.StudentMapper;
 import com.example.project.studentsystem.mapper.StudentTranscriptMapper;
 import com.example.project.studentsystem.service.StudentService;
 import com.example.project.studentsystem.service.StudentTranscriptService;
@@ -47,6 +50,11 @@ public class StudentTranscriptController {
 
     @Autowired
     private StudentService studentService;
+
+
+    @Autowired
+    private StudentMapper studentMapper;
+
 
 
     @PostMapping("/importByExcel")
@@ -85,10 +93,16 @@ public class StudentTranscriptController {
                 studentTranscript.setSemester(Integer.valueOf(info.getSemester()));
                 //获取该门课程的学分
                 Course course = courseMapper.selectById(Long.valueOf(info.getCourseId()));
+
                 if(Integer.valueOf(info.getScore())<60){
                     studentTranscript.setCredit(0.00);
                 }else {
-                    studentTranscript.setCredit(Double.valueOf(course.getCredit()));
+                    if(course!=null && course.getCredit()!=null){
+                        studentTranscript.setCredit(Double.valueOf(course.getCredit()));
+                    }else {
+                        studentTranscript.setCredit(0.00);
+                    }
+
                 }
 
                 studentTranscripts.add(studentTranscript);
@@ -110,6 +124,42 @@ public class StudentTranscriptController {
 
 
             if(CollectionUtil.isNotEmpty(studentTranscripts)){
+
+                List<Long> studentIds = studentTranscripts.stream().map(StudentTranscript::getStudentId).distinct().collect(Collectors.toList());
+                if(CollectionUtil.isNotEmpty(studentIds)){
+
+                    for (int i=0;i<studentIds.size();i++){
+                        Long studentId = studentIds.get(i);
+
+                        //获取Excel中该学生的所有课程ID，并去重
+                        List<Long> courseIdOfThisStudent = studentTranscripts.stream().filter(data -> data.getStudentId().equals(studentId))
+                                .map(StudentTranscript::getCourseId).distinct()
+                                .collect(Collectors.toList());
+                        //获取该学生的专业的课程信息
+                        Student student = studentMapper.selectById(studentId);
+                        if(student!=null && student.getProfessionId()!=null){
+
+                            QueryWrapper<Course> queryWrapper = new QueryWrapper<>();
+                            queryWrapper.eq("profession_id", student.getProfessionId());
+                            List<Course> courseList = courseMapper.selectList(queryWrapper);
+                            if(!CollectionUtil.isNotEmpty(courseList)){
+                                return Results.newFailedResult("导入失败,学号为："+studentId+"的学生专业未分配课程");
+                            }
+
+                            List<Long> collect = courseList.stream().map(Course::getId).distinct().collect(Collectors.toList());
+                            for(int j=0;j<courseIdOfThisStudent.size();j++){
+                                //该学生专业不包含该Excel中的某个课程，返回导入失败
+                                if(!collect.contains(courseIdOfThisStudent.get(j))){
+                                    return Results.newFailedResult("导入失败,课程编码为："+courseIdOfThisStudent.get(j)+"的课程不属于该专业");
+                                }
+                            }
+
+                        }else {
+                            return Results.newFailedResult("导入失败,学号为："+studentId+"的学生不存在，或者未分配专业");
+                        }
+                    }
+                }
+
                 boolean b = iStudentService.saveOrUpdateBatch(studentTranscripts);
                 if(b){
                     return Results.newSuccessResult("导入成功");
