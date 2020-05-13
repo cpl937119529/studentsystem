@@ -116,7 +116,6 @@ public class StudentService {
 
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("user_name",resp.getUserName());
-        wrapper.eq("pass_word",resp.getPassWord());
         List<User> users = userMapper.selectList(wrapper);
         if(CollectionUtil.isNotEmpty(users)){
             return -1;
@@ -125,7 +124,7 @@ public class StudentService {
         User user = new User();
         user.setUserType(3);
         user.setUserName(resp.getUserName());
-        user.setPassWord(resp.getPassWord());
+        user.setPassWord("123456");
         userMapper.insert(user);
 
         List<User> userList = userMapper.selectList(wrapper);

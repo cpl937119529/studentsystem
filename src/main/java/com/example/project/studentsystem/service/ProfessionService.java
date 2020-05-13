@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProfessionService {
@@ -36,6 +37,8 @@ public class ProfessionService {
     @Autowired
     private CourseMapper courseMapper;
 
+    @Autowired
+    private CounselorMapper counselorMapper;
 
     /**
      * 添加专业
@@ -74,24 +77,29 @@ public class ProfessionService {
     }
 
     /**
-     * 获取所有专业信息
+     * 获取该辅导员管理的所有专业信息
      * @return
      */
-    public List<ProfessionResp> getAll(){
+    public List<ProfessionResp> getAllByCourseUserId(String userId){
+        //先根据userId获取辅导员id
+        QueryWrapper<Counselor> counselorQueryWrapper = new QueryWrapper<>();
+        counselorQueryWrapper.eq("user_id",Long.valueOf(userId));
+        List<Counselor> counselors = counselorMapper.selectList(counselorQueryWrapper);
+        Counselor counselor = counselors.get(0);
         List<ProfessionResp> resultList = Lists.newArrayList();
-        List<Profession> professions = professionMapper.selectList(null);
-        if(CollectionUtil.isNotEmpty(professions)){
-
-            professions.forEach(profession -> {
+        QueryWrapper<CounselorProfessionRel> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("counselor_id",counselor.getId());
+        List<CounselorProfessionRel> counselorProfessionRels = counselorProfessionRelMapper.selectList(queryWrapper);
+        if(CollectionUtil.isNotEmpty(counselorProfessionRels)){
+            counselorProfessionRels.forEach(rel->{
+                Profession profession = professionMapper.selectById(rel.getProfessionId());
                 ProfessionResp resp = new ProfessionResp();
                 BeanUtils.copyProperties(profession,resp);
                 resp.setId(profession.getId().toString());
                 resultList.add(resp);
             });
-
         }
-
-        return resultList;
+        return resultList.stream().distinct().collect(Collectors.toList());
     }
 
     /**

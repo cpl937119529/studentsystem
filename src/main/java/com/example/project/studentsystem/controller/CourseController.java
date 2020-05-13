@@ -145,4 +145,15 @@ public class CourseController {
         return Results.newSuccessResult("删除成功");
     }
 
+
+    /**
+     * 获取辅导员管辖专业的课程
+     * @param userId
+     * @return
+     */
+    @GetMapping("/getCourseByCourseUserId")
+    public Result<Object> getCourseByCourseUserId(@RequestParam String userId){
+        return Results.newSuccessResult(courseService.getCourseByCourseUserId(userId));
+    }
+
 }

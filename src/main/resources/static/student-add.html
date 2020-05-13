@@ -24,7 +24,6 @@
         function addUser() {
             const data={}
             let userName = document.getElementById("username").value;
-            let passWord = document.getElementById("password").value;
             let name = document.getElementById("name").value;
             let sex = document.getElementById("sex").value;
             let startYear = document.getElementById("startYear").value;
@@ -32,7 +31,6 @@
                 alert("输入信息不完整")
             }else {
                 data.userName=userName;
-                data.passWord=passWord;
                 data.name=name;
                 data.sex=sex==="男"?1:2;
                 data.startYear=startYear;
@@ -69,15 +67,6 @@
             <div class="layui-input-inline">
                 <input type="text" id="username" name="username" required="" lay-verify="username"
                        autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label for="password" class="layui-form-label">
-                <span class="x-red">*</span>密码
-            </label>
-            <div class="layui-input-inline">
-                <input type="text" value="123456" id="password" name="password" required="" lay-verify="password"
-                       autocomplete="off" class="layui-input" disabled>
             </div>
         </div>
 

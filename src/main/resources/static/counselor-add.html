@@ -24,16 +24,14 @@
         function addCounselor() {
             const data={}
             let userName = document.getElementById("username").value;
-            let passWord = document.getElementById("password").value;
             let name = document.getElementById("name").value;
             let sex = document.getElementById("sex").value;
             let department = document.getElementById("department").value;
 
-            if(userName==="" || passWord==="" ||  name==="" || sex==="" || department===""){
+            if(userName==="" ||  name==="" || sex==="" || department===""){
                 alert("输入信息不完整")
             }else {
                 data.userName=userName;
-                data.passWord=passWord;
                 data.counselorName=name;
                 data.sex=sex==="男"?1:2;
                 data.department=department;
@@ -70,15 +68,6 @@
             <div class="layui-input-inline">
                 <input type="text" id="username" name="username" required="" lay-verify="username"
                        autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label for="password" class="layui-form-label">
-                <span class="x-red">*</span>密码
-            </label>
-            <div class="layui-input-inline">
-                <input type="text" id="password"  value="123456" name="password" required="" lay-verify="password"
-                       autocomplete="off" class="layui-input" disabled>
             </div>
         </div>
 
