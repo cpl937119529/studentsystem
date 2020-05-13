@@ -34,12 +34,12 @@ public class ProfessionController {
     }
 
     /**
-     * 获取所有专业信息
+     * 获取该辅导员管理的所有专业信息
      * @return
      */
-    @GetMapping("/getAll")
-    public Result<Object> getAll(){
-        return Results.newSuccessResult(professionService.getAll());
+    @GetMapping("/getAllByCourseUserId")
+    public Result<Object> getAllByCourseUserId(@RequestParam String userId){
+        return Results.newSuccessResult(professionService.getAllByCourseUserId(userId));
     }
 
 

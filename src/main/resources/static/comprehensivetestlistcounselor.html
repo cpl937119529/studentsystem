@@ -23,24 +23,40 @@
 
 
       function getAll() {
-          $.ajax({
-              url: "/profession/getAll",
-              type: "GET",
-              contentType: "application/json;charset=utf-8",
-              success: function (response) {
-                  if(response.data.length!==0){
-                      for (let i=0;i<response.data.length;i++){
-                          $("#professionName").append("<option value='"+response.data[i].professionName+"'>"+response.data[i].professionName+"</option>")
-                      }
+
+          if(document.cookie.length!==0) {
+              // 按照分隔符截取后转换获得对象
+              const msg = document.cookie.split("; ");
+              for (let i = 0; i < msg.length; i++) {
+                  const info = msg[i].split("=")[0];
+                  if (info === "loginUser") {
+                      const obj = JSON.parse(msg[i].split("=")[1]);
+                      $.ajax({
+                          url: "/profession/getAllByCourseUserId?userId="+obj.id+"",
+                          type: "GET",
+                          contentType: "application/json;charset=utf-8",
+                          success: function (response) {
+                              if(response.data.length!==0){
+                                  for (let i=0;i<response.data.length;i++){
+                                      console.log("添加专业节点：",response.data[i].professionName);
+                                      $("#professionName").append("<option value='"+response.data[i].professionName+"'>"+response.data[i].professionName+"</option>")
+                                  }
+                              }
+                          }
+                      });
+
                   }
               }
-          });
+          }
+
+
       }
       
       function search() {
           const professionName=document.getElementById("professionName").value;
           const year=document.getElementById("year").value;
           const semester=document.getElementById("semester").value;
+          const studyYear=document.getElementById("studyYear").value;
 
           const searchData={}
 
@@ -48,6 +64,7 @@
               searchData.professionName=professionName;
               searchData.year=year;
               searchData.semester=semester;
+              searchData.studyYear=studyYear;
 
               if (confirm("确定计算此专业该学年学期的综测成绩吗？")) {
                   if(document.cookie.length!==0) {
@@ -102,7 +119,7 @@
           }else if(professionName==="All" && year!=="" && semester!==""){
               searchData.year=year;
               searchData.semester=semester;
-
+              searchData.studyYear=studyYear;
               if (confirm("确定该学年学期所有专业的综测成绩吗？")) {
 
                   if(document.cookie.length!==0) {
@@ -133,10 +150,10 @@
                                                               +"<td>" + response.data[i].studentName+ "</td>"
                                                               +"<td>" + response.data[i].professionName+ "</td>"
                                                               +"<td>" + (response.data[i].className==null?"":response.data[i].className) + "</td>"
-                                                              +"<td>" + response.data[i].averageScore + "</td>"
+                                                              +"<td>" + (response.data[i].averageScore==="NaN"?"0":response.data[i].averageScore) + "</td>"
                                                               +"<td>" + response.data[i].allAddScore+ "</td>"
                                                               +"<td>" + response.data[i].allReduceScore+ "</td>"
-                                                              +"<td>" + response.data[i].overallResult+ "</td>"
+                                                              +"<td>" + (response.data[i].overallResult==="NaN"?"0":response.data[i].overallResult)+ "</td>"
                                                               +"</tr>";
                                                           $("#recordTab").append(str);
                                                       }
@@ -165,17 +182,18 @@
               const professionName=document.getElementById("professionName").value;
               const year=document.getElementById("year").value;
               const semester=document.getElementById("semester").value;
+              const studyYear=document.getElementById("studyYear").value;
 
               const searchData={}
 
-              if(professionName!=="" && year!=="" && semester!=="") {
+              if(professionName!=="All") {
                   searchData.professionName = professionName;
-                  searchData.year = year;
-                  searchData.semester = semester;
-              }else if(professionName==="" && year!=="" && semester!=="") {
-                  searchData.year = year;
-                  searchData.semester = semester;
+
               }
+
+              searchData.year = year;
+              searchData.semester = semester;
+              searchData.studyYear=studyYear;
 
               if(document.cookie.length!==0) {
                   // 按照分隔符截取后转换获得对象
@@ -224,6 +242,27 @@
 
             <div class="layui-input-inline">
                 <select id="year">
+                    <option value=2010>2010</option>
+                    <option value=2011>2011</option>
+                    <option value=2012>2012</option>
+                    <option value=2013>2013</option>
+                    <option value=2014>2014</option>
+                    <option value=2015>2015</option>
+                    <option value=2016>2016</option>
+                    <option value=2017>2017</option>
+                    <option value=2018>2018</option>
+                    <option value=2019>2019</option>
+                    <option value=2020>2020</option>
+                    <option value=2021>2021</option>
+                    <option value=2022>2022</option>
+                    <option value=2023>2023</option>
+                    <option value=2024>2024</option>
+                    <option value=2025>2025</option>
+                </select>
+            </div>
+
+            <div class="layui-input-inline">
+                <select id="studyYear">
                     <option value=2010>2010</option>
                     <option value=2011>2011</option>
                     <option value=2012>2012</option>

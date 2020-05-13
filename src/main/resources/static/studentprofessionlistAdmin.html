@@ -23,57 +23,46 @@
 
     function getAll() {
 
-      if(document.cookie.length!==0) {
-        // 按照分隔符截取后转换获得对象
-        const msg = document.cookie.split("; ");
-        for (let i = 0; i < msg.length; i++) {
-          const info = msg[i].split("=")[0];
-          if (info === "loginUser") {
-            const obj = JSON.parse(msg[i].split("=")[1]);
-            $.ajax({
-              url: "/student/getStudentListByCounselor?userId="+obj.id+"",
-              type: "GET",
-              contentType: "application/json;charset=utf-8",
-              success: function (response) {
-                if(response.code===200){
-                  if(response.data.length===0){
-                    document.getElementById("recordTab").innerText="";
-                  }else {
-                    document.getElementById("recordTab").innerText="";
-                    let str = "";
-                    for(let i=0;i<response.data.length;i++){
-                      str = "<tr>"
-                              +"<td>" + response.data[i].name + "</td>"
-                              +"<td>" + (response.data[i].professionName!=null?response.data[i].professionName:"未分配")+ "</td>"
-                              +"<td>" + (response.data[i].sex===1?"男":"女") + "</td>"
-                              +"<td>" + response.data[i].startYear+ "</td>"
-                              +"</tr>";
-                      $("#recordTab").append(str);
-                    }
-                  }
-                }else {
-                  alert(response.message)
-                }
-              }
-            });
-
-
-            $.ajax({
-              url: "/profession/getAllByCourseUserId?userId="+obj.id+"",
-              type: "GET",
-              contentType: "application/json;charset=utf-8",
-              success: function (response) {
-                if(response.data.length!==0){
-                  for(let i=0;i<response.data.length;i++){
-                    $("#professionName").append("<option value='"+response.data[i].professionName+"'>"+response.data[i].professionName+"</option>")
-                  }
-                }
-              }
-            });
-
+      $.ajax({
+        url: "/profession/getAll",
+        type: "GET",
+        contentType: "application/json;charset=utf-8",
+        success: function (response) {
+          if(response.data.length!==0){
+            for(let i=0;i<response.data.length;i++){
+              $("#professionName").append("<option value='"+response.data[i].professionName+"'>"+response.data[i].professionName+"</option>")
+            }
           }
         }
-      }
+      });
+
+      $.ajax({
+        url: "/student/getAllInfo",
+        type: "GET",
+        contentType: "application/json;charset=utf-8",
+        success: function (response) {
+          if(response.code===200){
+            if(response.data.length===0){
+              document.getElementById("recordTab").innerText="";
+            }else {
+              document.getElementById("recordTab").innerText="";
+              let str = "";
+              for(let i=0;i<response.data.length;i++){
+                str = "<tr>"
+                        +"<td>" + response.data[i].name + "</td>"
+                        +"<td>" + (response.data[i].professionName!=null?response.data[i].professionName:"未分配")+ "</td>"
+                        +"<td>" + (response.data[i].sex===1?"男":"女") + "</td>"
+                        +"<td>" + response.data[i].startYear+ "</td>"
+                        +"</tr>";
+                $("#recordTab").append(str);
+              }
+            }
+          }else {
+            alert(response.message)
+          }
+        }
+      });
+
     }
 
 

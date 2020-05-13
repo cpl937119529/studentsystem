@@ -4,12 +4,8 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.project.studentsystem.IService.impl.ICourseServiceImpl;
 import com.example.project.studentsystem.dto.CourseResp;
-import com.example.project.studentsystem.entry.Course;
-import com.example.project.studentsystem.entry.Profession;
-import com.example.project.studentsystem.entry.SemesterProfessionalCourses;
-import com.example.project.studentsystem.mapper.CourseMapper;
-import com.example.project.studentsystem.mapper.ProfessionMapper;
-import com.example.project.studentsystem.mapper.SemesterProfessionalCoursesMapper;
+import com.example.project.studentsystem.entry.*;
+import com.example.project.studentsystem.mapper.*;
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +29,12 @@ public class CourseService {
     @Autowired
     private SemesterProfessionalCoursesMapper semesterProfessionalCoursesMapper;
 
+    @Autowired
+    private CounselorMapper counselorMapper;
+
+    @Autowired
+    private CounselorProfessionRelMapper counselorProfessionRelMapper;
+
     /**
      * 获取所有课程表信息
      * @return
@@ -53,6 +55,47 @@ public class CourseService {
             });
         }
         return respList;
+    }
+
+    /**
+     * 获取辅导员管辖专业的课程
+     * @param userId
+     * @return
+     */
+    public List<CourseResp> getCourseByCourseUserId(String userId){
+        List<CourseResp> respList = Lists.newArrayList();
+        QueryWrapper<Counselor> counselorQueryWrapper = new QueryWrapper<>();
+        counselorQueryWrapper.eq("user_id",Long.valueOf(userId));
+        List<Counselor> counselors = counselorMapper.selectList(counselorQueryWrapper);
+        Counselor counselor = counselors.get(0);
+        //获取该辅导员管辖的专业
+        QueryWrapper<CounselorProfessionRel> counselorProfessionRelQueryWrapper = new QueryWrapper<>();
+        counselorProfessionRelQueryWrapper.eq("counselor_id",counselor.getId());
+        List<CounselorProfessionRel> counselorProfessionRels = counselorProfessionRelMapper.selectList(counselorProfessionRelQueryWrapper);
+        if(CollectionUtil.isNotEmpty(counselorProfessionRels)){
+            //有管辖专业
+            counselorProfessionRels.forEach(rel->{
+                //获取该专业的课程
+               QueryWrapper<Course> queryWrapper = new QueryWrapper<>();
+               queryWrapper.eq("profession_id",rel.getProfessionId());
+                List<Course> courseList = courseMapper.selectList(queryWrapper);
+                if(CollectionUtil.isNotEmpty(courseList)){
+                    //该专业下有课程信息
+                    courseList.forEach(data->{
+                        CourseResp resp = new CourseResp();
+                        BeanUtils.copyProperties(data,resp);
+                        resp.setId(data.getId().toString());
+                        resp.setProfessionId(data.getProfessionId().toString());
+
+                        Profession profession = professionMapper.selectById(data.getProfessionId());
+                        resp.setProfessionName(profession.getProfessionName());
+                        respList.add(resp);
+                    });
+                }
+            });
+
+        }
+        return respList.stream().distinct().collect(Collectors.toList());
     }
 
 

@@ -8,6 +8,8 @@ import com.example.project.studentsystem.service.ComprehensiveTestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/comprehensiveTest")
 public class ComprehensiveTestController {
@@ -22,7 +24,20 @@ public class ComprehensiveTestController {
      */
     @PostMapping("/getTotalScoreByCounselorUserId")
     public Result<Object> getTotalScoreByCounselorUserId(@RequestBody ComprehensiveTestResp resp){
-        return Results.newSuccessResult(comprehensiveTestService.getTotalScoreByCounselorUserId(resp));
+        List<ComprehensiveTestResp> result = comprehensiveTestService.getTotalScoreByCounselorUserId(resp);
+
+        boolean isErr=true;
+
+        for(int i=0;i<result.size();i++){
+            if(result.get(i).getAverageScore()!=0  && result.get(i).getOverallResult()!=0){
+                isErr=false;
+            }
+        }
+
+        if(isErr){
+            return Results.newFailedResult("计算失败，请先录入综测指标");
+        }
+        return Results.newSuccessResult(result);
     }
 
     @PostMapping("/sendTotalScore")

@@ -99,5 +99,15 @@ public class StudentController {
         return Results.newSuccessResult(studentService.getInfoByUserId(userId));
     }
 
+    /**
+     * 根据id获取学生信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/getInfoById")
+    public Result<Object> getInfoById(@RequestParam String id){
+        return Results.newSuccessResult(studentService.getInfoById(id));
+    }
+
 
 }

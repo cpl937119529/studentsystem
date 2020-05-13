@@ -32,4 +32,6 @@ public class ComprehensiveTestResp {
     private String userId;
 
     private String className;
+
+    private Integer studyYear;
 }

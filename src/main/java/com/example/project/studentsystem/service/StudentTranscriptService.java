@@ -86,12 +86,13 @@ public class StudentTranscriptService {
                                 resp.setCredit(studentTranscript.getCredit());
                                 resp.setScore(studentTranscript.getScore());
                                 resp.setSemester(studentTranscript.getSemester());
-                                resp.setYear(studentTranscript.getYear());
+                                resp.setYear(student.getStartYear());
                                 resp.setStudentName(student.getName());
                                 Course course = courseMapper.selectById(studentTranscript.getCourseId());
                                 resp.setCourseName(course.getCourseName());
                                 resp.setProfessionName(profession.getProfessionName());
                                 resp.setClassName(student.getClassName());
+                                resp.setStudyYear(studentTranscript.getYear());
                                 resultList.add(resp);
                             });
                         }
@@ -110,7 +111,17 @@ public class StudentTranscriptService {
      * @return
      */
     public List<StudentTranscriptResp> findByCondition(StudentTranscriptResp resp) {
-        List<StudentTranscriptResp> resultList = this.getByCounselorUserId(resp.getUserId());
+        List<StudentTranscriptResp> resultList;
+        if(resp.getStudyYear()!=null){
+            resultList = this.getByCounselorUserId(resp.getUserId()).stream().filter(data -> data.getStudyYear().equals(resp.getStudyYear())).collect(Collectors.toList());
+        }else {
+            resultList = this.getByCounselorUserId(resp.getUserId());
+        }
+
+        if(resp.getStudentName()!=null){
+            resultList =resultList.stream().filter(data -> data.getStudentName().equals(resp.getStudentName())).collect(Collectors.toList());
+        }
+
 
         if (resp.getYear() != null && resp.getClassName() == null && resp.getProfessionName() == null) {
 

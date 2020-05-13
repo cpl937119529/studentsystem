@@ -53,25 +53,38 @@
         function UpladFile(fileObj) {
             var form = new FormData(); // FormData 对象
             form.append("file", fileObj); // 文件对象
-            $.ajax({
-                url: '/studentTranscript/importByExcel',                      //url地址
-                type: 'POST',                 //上传方式
-                data: form,                   // 上传formdata封装的数据
-                dataType: 'JSON',
-                cache: false,                  // 不缓存
-                processData: false,        // jQuery不要去处理发送的数据
-                contentType: false,         // jQuery不要去设置Content-Type请求头
-                success:function (data) {
-                    if(data.code===200){
-                        alert("导入成绩成功")
-                    }else {
-                        alert(data.message)
+            if(document.cookie.length!==0){
+                // 按照分隔符截取后转换获得对象
+                console.log(document.cookie)
+                const msg = document.cookie.split("; ");
+                for(let i=0; i<msg.length; i++){
+                    const info = msg[i].split("=")[0];
+                    if(info==="loginUser"){
+                        const obj = JSON.parse(msg[i].split("=")[1]);
+                        form.append("userId",obj.id);
+                        $.ajax({
+                            url: '/studentTranscript/importByExcel',                      //url地址
+                            type: 'POST',                 //上传方式
+                            data: form,                   // 上传formdata封装的数据
+                            dataType: 'JSON',
+                            cache: false,                  // 不缓存
+                            processData: false,        // jQuery不要去处理发送的数据
+                            contentType: false,         // jQuery不要去设置Content-Type请求头
+                            success:function (data) {
+                                if(data.code===200){
+                                    alert("导入成绩成功")
+                                }else {
+                                    alert(data.message)
+                                }
+                            },
+                            error:function (data) {           //失败回调
+                                console.log(data);
+                            }
+                        });
                     }
-                },
-                error:function (data) {           //失败回调
-                    console.log(data);
                 }
-            });
+            }
+
         }
 
     </script>
@@ -125,12 +138,18 @@
                             <cite>学生列表</cite>
                         </a>
                     </li >
+                    <li>
+                        <a _href="./studentprofessionlist.html">
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>学生专业列表</cite>
+                        </a>
+                    </li >
                 </ul>
             </li>
             <li>
                 <a href="javascript:;">
                     <i class="iconfont">&#xe723;</i>
-                    <cite>综测管理</cite>
+                    <cite>综测指标管理</cite>
                     <i class="iconfont nav_right">&#xe697;</i>
                 </a>
                 <ul class="sub-menu">
@@ -146,12 +165,7 @@
                             <cite>扣分记录</cite>
                         </a>
                     </li >
-                    <li>
-                        <a _href="./studentprofessionlist.html">
-                            <i class="iconfont">&#xe6a7;</i>
-                            <cite>学生专业列表</cite>
-                        </a>
-                    </li >
+
                     <li>
                         <a _href="./course_list.html">
                             <i class="iconfont">&#xe6a7;</i>
@@ -178,37 +192,6 @@
                     </li >
                 </ul>
             </li>
-<!--            <li>-->
-<!--                <a href="javascript:;">-->
-<!--                    <i class="iconfont">&#xe6b8;</i>-->
-<!--                    <cite>辅导员管理</cite>-->
-<!--                    <i class="iconfont nav_right">&#xe697;</i>-->
-<!--                </a>-->
-<!--                <ul class="sub-menu">-->
-<!--                    <li>-->
-<!--                        <a _href="./counselor_list.html">-->
-<!--                            <i class="iconfont">&#xe6a7;</i>-->
-<!--                            <cite>辅导员列表</cite>-->
-
-<!--                        </a>-->
-<!--                    </li >-->
-<!--                </ul>-->
-<!--            </li>-->
-<!--            <li>-->
-<!--                <a href="javascript:;">-->
-<!--                    <i class="iconfont">&#xe6b8;</i>-->
-<!--                    <cite>学生管理</cite>-->
-<!--                    <i class="iconfont nav_right">&#xe697;</i>-->
-<!--                </a>-->
-<!--                <ul class="sub-menu">-->
-<!--                    <li>-->
-<!--                        <a _href="./student_list.html">-->
-<!--                            <i class="iconfont">&#xe6a7;</i>-->
-<!--                            <cite>学生列表</cite>-->
-<!--                        </a>-->
-<!--                    </li >-->
-<!--                </ul>-->
-<!--            </li>-->
         </ul>
       </div>
     </div>

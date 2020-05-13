@@ -23,50 +23,64 @@
 
     function getAll() {
 
-      $.ajax({
-        url: "/profession/getAll",
-        type: "GET",
-        contentType: "application/json;charset=utf-8",
-        success: function (response) {
-          if(response.data.length!==0){
-            for (let i=0;i<response.data.length;i++){
-              $("#professionName").append("<option value='"+response.data[i].professionName+"'>"+response.data[i].professionName+"</option>")
-            }
-          }
-        }
-      });
-
-
-      $.ajax({
-        url: "/course/getAll",
-        type: "GET",
-        contentType: "application/json;charset=utf-8",
-        success: function (response) {
-
-          if(response.code===200){
-
-            if(response.data.length===0){
-              document.getElementById("recordTab").innerText="";
-            }else {
-              let str = "";
-              for(let i=0;i<response.data.length;i++){
-                str = "<tr>"
-                        +"<td>" + response.data[i].id + "</td>"
-                        +"<td>" + response.data[i].courseName+ "</td>"
-                        +"<td>" + response.data[i].professionName + "</td>"
-                        +"<td>" + response.data[i].credit+ "</td>"
-                        +"<td class='td-manage'>" +
-                          " <span title='删除' onclick='deleteCourse("+JSON.stringify(response.data[i])+")'><i class='layui-icon'>&#xe640;</i></span>" +
-                        " </td>"
-                        +"</tr>";
-                $("#recordTab").append(str);
+      if(document.cookie.length!==0) {
+        // 按照分隔符截取后转换获得对象
+        const msg = document.cookie.split("; ");
+        for (let i = 0; i < msg.length; i++) {
+          const info = msg[i].split("=")[0];
+          if (info === "loginUser") {
+            const obj = JSON.parse(msg[i].split("=")[1]);
+            $.ajax({
+              url: "/profession/getAllByCourseUserId?userId="+obj.id+"",
+              type: "GET",
+              contentType: "application/json;charset=utf-8",
+              success: function (response) {
+                if(response.data.length!==0){
+                  for (let i=0;i<response.data.length;i++){
+                    $("#professionName").append("<option value='"+response.data[i].professionName+"'>"+response.data[i].professionName+"</option>")
+                  }
+                }
               }
-            }
-          }else {
-            alert(response.message)
+            });
+
+
+            $.ajax({
+              url: "/course/getCourseByCourseUserId?userId="+obj.id+"",
+              type: "GET",
+              contentType: "application/json;charset=utf-8",
+              success: function (response) {
+
+                if(response.code===200){
+
+                  if(response.data.length===0){
+                    document.getElementById("recordTab").innerText="";
+                  }else {
+                    let str = "";
+                    for(let i=0;i<response.data.length;i++){
+                      str = "<tr>"
+                              +"<td>" + response.data[i].id + "</td>"
+                              +"<td>" + response.data[i].courseName+ "</td>"
+                              +"<td>" + response.data[i].professionName + "</td>"
+                              +"<td>" + response.data[i].credit+ "</td>"
+                              +"<td class='td-manage'>" +
+                              " <span title='删除' onclick='deleteCourse("+JSON.stringify(response.data[i])+")'><i class='layui-icon'>&#xe640;</i></span>" +
+                              " </td>"
+                              +"</tr>";
+                      $("#recordTab").append(str);
+                    }
+                  }
+                }else {
+                  alert(response.message)
+                }
+              }
+            });
+
           }
         }
-      });
+      }
+
+
+
     }
 
 

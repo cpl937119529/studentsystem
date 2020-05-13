@@ -12,6 +12,10 @@ import com.example.project.studentsystem.base.Results;
 import com.example.project.studentsystem.dto.CourseReqForExcel;
 import com.example.project.studentsystem.dto.CourseResp;
 import com.example.project.studentsystem.entry.Course;
+import com.example.project.studentsystem.entry.Profession;
+import com.example.project.studentsystem.mapper.CourseMapper;
+import com.example.project.studentsystem.mapper.ProfessionMapper;
+import com.example.project.studentsystem.mapper.StudentMapper;
 import com.example.project.studentsystem.service.CourseService;
 import com.example.project.studentsystem.utils.ExcelListener;
 import com.google.common.collect.Lists;
@@ -33,6 +37,10 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
+
+    @Autowired
+    private ProfessionMapper professionMapper;
+
 
     @PostMapping("/importByExcel")
     public Result<Object> uploadFile(@RequestParam(value = "file", required=true) MultipartFile file){
@@ -67,6 +75,19 @@ public class CourseController {
                 courseList.add(course);
                 });
 
+
+
+            if(CollectionUtil.isNotEmpty(courseList)){
+
+                for (int i=0;i<courseList.size();i++){
+                    Profession profession = professionMapper.selectById(courseList.get(i).getProfessionId());
+                    if(profession==null){
+                        return Results.newFailedResult("导入失败,不存在专业Id为："+courseList.get(i).getProfessionId()+"的专业");
+                    }
+                }
+            }
+
+
             if(CollectionUtil.isNotEmpty(courseList)){
                 boolean b = service.saveOrUpdateBatch(courseList);
                 if(b){
@@ -78,6 +99,7 @@ public class CourseController {
 
         } catch(Exception e){
             e.printStackTrace();
+            return Results.newSuccessResult("导入异常");
         } finally {
             if(buffer != null){
                 try{
@@ -121,6 +143,17 @@ public class CourseController {
             return Results.newFailedResult("删除失败，该课程已被使用");
         }
         return Results.newSuccessResult("删除成功");
+    }
+
+
+    /**
+     * 获取辅导员管辖专业的课程
+     * @param userId
+     * @return
+     */
+    @GetMapping("/getCourseByCourseUserId")
+    public Result<Object> getCourseByCourseUserId(@RequestParam String userId){
+        return Results.newSuccessResult(courseService.getCourseByCourseUserId(userId));
     }
 
 }
