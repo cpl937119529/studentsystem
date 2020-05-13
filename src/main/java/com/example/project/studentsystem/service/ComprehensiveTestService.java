@@ -105,7 +105,7 @@ public class ComprehensiveTestService {
                         //获取该学生在该学年该学期的扣分记录，并计算总的扣分分数
                        QueryWrapper<DeductionRecord> deductionRecordQueryWrapper = new QueryWrapper<>();
                        deductionRecordQueryWrapper.eq("student_id",student.getId())
-                                .eq("year",year)
+                                .eq("year",studyYear)
                                 .eq("semester",semester);
                         List<DeductionRecord> deductionRecords = deductionRecordMapper.selectList(deductionRecordQueryWrapper);
                         int reduceScores = deductionRecords.stream().mapToInt(DeductionRecord::getScore).sum();
@@ -113,7 +113,7 @@ public class ComprehensiveTestService {
                         //获取该学生在该学年该学期的各科总成绩、总学分
                         QueryWrapper<StudentTranscript> studentTranscriptQueryWrapper = new QueryWrapper<>();
                         studentTranscriptQueryWrapper.eq("student_id",student.getId())
-                                .eq("year",year)
+                                .eq("year",studyYear)
                                 .eq("semester",semester);
                         List<StudentTranscript> studentTranscripts = studentTranscriptMapper.selectList(studentTranscriptQueryWrapper);
                         final double[] scores = {0.0};
