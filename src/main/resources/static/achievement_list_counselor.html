@@ -67,6 +67,7 @@
                         url: "/class/getClassByUserId?userId="+obj.id+"",
                         type: "GET",
                         contentType: "application/json;charset=utf-8",
+                        async:false,
                         success: function (response) {
                             if(response.data.length!==0){
                                 for (let i=0;i<response.data.length;i++){
@@ -80,6 +81,7 @@
                         url: "/profession/getAllByCourseUserId?userId="+obj.id+"",
                         type: "GET",
                         contentType: "application/json;charset=utf-8",
+                        async:false,
                         success: function (response) {
                             if(response.data.length!==0){
                                 for (let i=0;i<response.data.length;i++){

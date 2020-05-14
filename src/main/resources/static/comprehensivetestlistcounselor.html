@@ -35,10 +35,10 @@
                           url: "/profession/getAllByCourseUserId?userId="+obj.id+"",
                           type: "GET",
                           contentType: "application/json;charset=utf-8",
+                          async:false,
                           success: function (response) {
                               if(response.data.length!==0){
                                   for (let i=0;i<response.data.length;i++){
-                                      console.log("添加专业节点：",response.data[i].professionName);
                                       $("#professionName").append("<option value='"+response.data[i].professionName+"'>"+response.data[i].professionName+"</option>")
                                   }
                               }
@@ -48,7 +48,6 @@
                   }
               }
           }
-
 
       }
       

@@ -161,7 +161,7 @@ public class ComprehensiveTestService {
                 //先判断该学生在当前学年当前学期是否已经有数据了，有数据则更新，无数据才进行添加
                 QueryWrapper<ComprehensiveTest> queryWrapper = new QueryWrapper<>();
                 queryWrapper.eq("student_id",Long.valueOf(resultList.get(i).getStudentId()))
-                        .eq("year",resultList.get(i).getYear())
+                        .eq("year",resultList.get(i).getStudyYear())
                         .eq("semester",resultList.get(i).getSemester());
                 List<ComprehensiveTest> comprehensiveTests = comprehensiveTestMapper.selectList(queryWrapper);
                 ComprehensiveTest comprehensiveTest = new ComprehensiveTest();
