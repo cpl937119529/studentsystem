@@ -42,6 +42,15 @@ public class ProfessionController {
         return Results.newSuccessResult(professionService.getAllByCourseUserId(userId));
     }
 
+    /**
+     * 获取所有专业信息
+     * @return
+     */
+    @GetMapping("/getAll")
+    public Result<Object> getAll(){
+        return Results.newSuccessResult(professionService.getAll());
+    }
+
 
     /**
      * 根据id删除专业

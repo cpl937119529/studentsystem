@@ -76,6 +76,21 @@ public class ProfessionService {
         return -2;
     }
 
+    public List<ProfessionResp> getAll(){
+        List<ProfessionResp> resultList = Lists.newArrayList();
+        List<CounselorProfessionRel> counselorProfessionRels = counselorProfessionRelMapper.selectList(null);
+        if(CollectionUtil.isNotEmpty(counselorProfessionRels)){
+            counselorProfessionRels.forEach(rel->{
+                Profession profession = professionMapper.selectById(rel.getProfessionId());
+                ProfessionResp resp = new ProfessionResp();
+                BeanUtils.copyProperties(profession,resp);
+                resp.setId(profession.getId().toString());
+                resultList.add(resp);
+            });
+        }
+        return resultList.stream().distinct().collect(Collectors.toList());
+    }
+
     /**
      * 获取该辅导员管理的所有专业信息
      * @return
