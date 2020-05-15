@@ -226,6 +226,7 @@ public class ComprehensiveTestService {
                                 resp.setStudentName(student.getName());
                                 resp.setClassName(student.getClassName());
                                 resp.setProfessionName(professionMapper.selectById(rel.getProfessionId()).getProfessionName());
+                                resp.setYear(student.getStartYear());
                                 resultList.add(resp);
                             });
                         }
