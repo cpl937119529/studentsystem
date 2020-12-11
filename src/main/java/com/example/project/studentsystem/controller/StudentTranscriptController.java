@@ -94,16 +94,22 @@ public class StudentTranscriptController {
                 //获取该门课程的学分
                 Course course = courseMapper.selectById(Long.valueOf(info.getCourseId()));
 
-                if(Integer.valueOf(info.getScore())<60){
-                    studentTranscript.setCredit(0.00);
+                if(course!=null && course.getCredit()!=null){
+                    studentTranscript.setCredit(Double.valueOf(course.getCredit()));
                 }else {
-                    if(course!=null && course.getCredit()!=null){
-                        studentTranscript.setCredit(Double.valueOf(course.getCredit()));
-                    }else {
-                        studentTranscript.setCredit(0.00);
-                    }
-
+                    studentTranscript.setCredit(0.00);
                 }
+
+//                if(Integer.valueOf(info.getScore())<60){
+//                    studentTranscript.setCredit(0.00);
+//                }else {
+//                    if(course!=null && course.getCredit()!=null){
+//                        studentTranscript.setCredit(Double.valueOf(course.getCredit()));
+//                    }else {
+//                        studentTranscript.setCredit(0.00);
+//                    }
+//
+//                }
 
                 studentTranscripts.add(studentTranscript);
             });

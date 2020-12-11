@@ -47,7 +47,7 @@
                                             +"<td>" + (response.data[i].className==null?"":response.data[i].className) + "</td>"
                                             +"<td>" + response.data[i].courseName+ "</td>"
                                             +"<td>" + response.data[i].score+ "</td>"
-                                            +"<td>" + response.data[i].credit+ "</td>"
+                                            +"<td>" + (response.data[i].score>60?response.data[i].credit:0)+ "</td>"
                                             +"<td>" + response.data[i].studyYear+ "</td>"
                                             +"<td>" + response.data[i].semester+ "</td>"
                                             // +"<td>"+
